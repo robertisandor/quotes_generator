@@ -1,0 +1,22 @@
+[package]
+name = "quotes-generator"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = {version = "0.4.10"}
+diesel = {version = "2.1.0", features = ["postgres", "r2d2"]}
+dotenvy = "0.15"
+serde = "1.0.152"
+serde_json = "1.0.105"
+rand = "0.8.5"
+
+[dependencies.rocket_dyn_templates]
+features = ["handlebars"]
+
+[dependencies.rocket_contrib]
+version = "0.4.4"
+default-features = false
+features = ["json"]
