@@ -41,7 +41,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: elonaire/workfall-rocket-rs:latest
+          tags: risandor/quotes_generator:0.1.0
 
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v0.1.4
