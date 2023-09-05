@@ -45,6 +45,9 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           script: |
-            whoami
             CI=true docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+            CI=true docker stop quotes-generator
+            CI=true docker image prune -a
+            CI=true docker pull risandor/quotes_generator:0.1.0
+            
             
