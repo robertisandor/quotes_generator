@@ -60,7 +60,6 @@ fn not_found(req: &Request) -> String {
 fn main() {
     rocket::ignite()
         .register(catchers![not_found])
-        // .mount("/api", routes![index, create_quote, list])
         .mount("/api", routes![index, create_quote, list])
         .launch();
 }

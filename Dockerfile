@@ -14,7 +14,7 @@ RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN rustup default nightly
 RUN cargo install diesel_cli --no-default-features --features postgres
-RUN USER=root cargo new --bin workfall-rocket-rs
+RUN USER=root cargo new --bin quotes-generator
 WORKDIR "/quotes_generator"
 COPY . .
 RUN cargo build --release
