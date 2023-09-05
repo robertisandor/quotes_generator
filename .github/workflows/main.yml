@@ -44,5 +44,6 @@ jobs:
           # key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
+            whoami
             CI=true docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
             
