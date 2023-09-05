@@ -56,5 +56,6 @@ jobs:
             CI=true docker stop quotes-generator
             CI=true docker image prune -a
             CI=true docker pull risandor/quotes_generator:0.1.0
+            CI=true docker rm quotes-generator
             CI=true docker run --name=quotes-generator -d -p 80:8000 risandor/quotes_generator:0.1.0
             
