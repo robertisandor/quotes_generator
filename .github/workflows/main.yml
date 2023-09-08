@@ -51,10 +51,11 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           script: |
+            CI=true echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
             CI=true docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
             CI=true docker stop quotes-generator
             CI=true docker image prune -a
             CI=true docker pull risandor/quotes_generator:0.1.0
             CI=true docker rm quotes-generator
-            CI=true docker run --name=quotes-generator -d -p 80:8000 risandor/quotes_generator:0.1.0
+            CI=true docker run --name=quotes-generator --env-file .env -d -p 80:8000 risandor/quotes_generator:0.1.0
             
