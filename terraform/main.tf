@@ -74,6 +74,11 @@ resource "aws_iam_group_policy" "admin_policy" {
     })
 }
 
+resource "aws_key_pair" "apiuser" {
+    key_name   = "apiuser"
+    public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjJ7onCRh/3ruUpmlviryTyyYWJHWwm7cmIIJMIw8xv robert.i.sandor@gmail.com"
+}
+
 data "aws_ami" "ubuntu" {
     most_recent = true
 
@@ -93,6 +98,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "web" {
     ami           = data.aws_ami.ubuntu.id
     instance_type = "t3.micro"
+    key_name = aws_key_pair.apiuser.key_name
 
     tags = {
         Name = "QuotesApiWeb"
