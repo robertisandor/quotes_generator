@@ -49,7 +49,7 @@ jobs:
         id: plan-output
         with:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
-  terraform:
+  terraform_apply:
     name: "Terraform Apply"
     runs-on: ubuntu-latest
     permissions:
