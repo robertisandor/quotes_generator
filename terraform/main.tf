@@ -7,6 +7,7 @@ terraform {
   }
 
   required_version = ">= 0.14.6"
+
 }
 
 provider "aws" {
@@ -35,4 +36,40 @@ resource "aws_db_parameter_group" "quotes_generator" {
     name  = "log_connections"
     value = "1"
   }
+}
+
+resource "aws_iam_group" "admin_group_test" {
+  name = "admin_group_test"
+  path = "/admin_group_test/"
+}
+
+resource "aws_iam_user_group_membership" "admin_group_membership" {
+  user = aws_iam_user.admin_user.name
+
+  groups = [
+    aws_iam_group.admin_group_test.name,
+  ]
+}
+
+resource "aws_iam_user" "admin_user" {
+  name = "admin_test"
+}
+
+resource "aws_iam_group_policy" "admin_policy" {
+  name  = "admin_db_policy"
+  group = aws_iam_group.admin_group_test.name
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "VisualEditor0",
+                "Effect": "Allow",
+                "Action": "rds:DescribeDBParameterGroups",
+                "Resource": "arn:aws:rds:*:487577641151:pg:*"
+            }
+        ]
+    })
 }
