@@ -34,7 +34,7 @@ jobs:
         id: plan-upload
         with:
           workspace: ${{ env.TF_WORKSPACE }}
-          directory: "./terraform"
+          directory: ${{ emv.CONFIG_DIRECTORY }}
           speculative: true
 
       - name: Create Plan Run
