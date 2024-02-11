@@ -37,6 +37,11 @@ resource "aws_db_parameter_group" "quotes_generator" {
     name  = "log_connections"
     value = "1"
   }
+
+  parameter {
+    name = "rds.force_ssl"
+    value = "0"
+  }
 }
 
 resource "aws_vpc" "quotes_main" {
@@ -219,8 +224,17 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "web" {
     ami           = data.aws_ami.ubuntu.id
-    instance_type = "t3.micro"
+    instance_type = "t2.micro"
     key_name = aws_key_pair.apiuser.key_name
+
+    user_data = <<-EOL
+    #!/bin/bash -xe
+
+    sudo apt-get update
+    sudo apt-get install -y postgresql-client
+    sudo passwd ubuntu <<< "testpassword"
+    sudo sed -i -e '/PasswordAuthentication / s/ .*/ yes/' /etc/ssh/sshd_config
+    EOL
 
     tags = {
         Name = "QuotesApiWeb"
