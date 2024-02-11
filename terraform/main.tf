@@ -21,7 +21,7 @@ resource "aws_db_instance" "quotes_generator" {
   engine               = "postgres"
   engine_version       = "15.4"
   db_name              = "quotes_db"
-  username             = "api"
+  username             = "postgres"
   password             = var.db_password
 #   db_subnet_group_name = aws_db_subnet_group.quotes_generator.name
   parameter_group_name = aws_db_parameter_group.quotes_generator.name
@@ -151,6 +151,29 @@ resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
   from_port         = 5432
   ip_protocol       = "tcp"
   to_port           = 5432
+}
+
+resource "aws_security_group" "default" {
+  name        = "default"
+  vpc_id      = aws_vpc.quotes_main.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_access" {
+  security_group_id = aws_security_group.default.id
+  description       = "Rule to allow SSH connections from internet to reach EC2"
+  cidr_ipv4         = aws_vpc.quotes_main.cidr_block
+  from_port         = 22
+  ip_protocol       = "ssh"
+  to_port           = 22
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_internet_access" {
+  security_group_id = aws_security_group.default.id
+  description       = "Rule to allow connections from internet to reach EC2"
+  cidr_ipv4         = ["98.45.195.5/32"]
+  from_port         = 80
+  ip_protocol       = "tcp"
+  to_port           = 80
 }
 
 resource "aws_network_interface" "rds_network_interface" {
