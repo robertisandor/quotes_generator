@@ -97,6 +97,8 @@ jobs:
           port: 22
           script: |
             CI=true echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
+            CI=true echo DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} >> .env
+            CI=true echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
             CI=true docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
             CI=true docker stop quotes-generator
             CI=true docker image prune -a
