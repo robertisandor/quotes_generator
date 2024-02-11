@@ -64,7 +64,7 @@ jobs:
       #   with:
       #     workspace: ${{ env.TF_WORKSPACE }}
       #     configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
-      
+
       # - name: Apply
       #   uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
       #   id: apply
@@ -93,7 +93,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
             CI=true echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
