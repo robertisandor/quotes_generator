@@ -170,7 +170,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_access" {
 resource "aws_vpc_security_group_ingress_rule" "allow_internet_access" {
   security_group_id = aws_security_group.default.id
   description       = "Rule to allow connections from internet to reach EC2"
-  cidr_ipv4         = ["98.45.195.5/32"]
+  cidr_ipv4         = "98.45.195.5/32"
   from_port         = 80
   ip_protocol       = "tcp"
   to_port           = 80
