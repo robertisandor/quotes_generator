@@ -25,7 +25,7 @@ pub fn create_quote(quote: Json<NewQuote>) -> Json<String> {
         INSERT INTO quotes
             (text, speaker)
         VALUES
-            ('{}', '{}')
+            ('{}', '{}');
     "#, quote.text.to_string(), quote.speaker.to_string());
     sql_query(query_string)
         .execute(connection)
@@ -44,7 +44,7 @@ pub fn list() -> Json<Vec<Quote>> {
             , speaker
         FROM
             quotes
-        ORDER BY quote_id DESC
+        ORDER BY quote_id DESC;
         ";
     let results = sql_query(query_string)
         .load::<Quote>(connection)
