@@ -26,7 +26,7 @@ pub fn create_quote(quote: Json<NewQuote>) -> Json<String> {
     let connection = &mut establish_connection_pg();
     info!("Created db connection for /api/quote");
     let query_string = format! (r#"
-        INSERT INTO quotes_db
+        INSERT INTO quotes
             (text, speaker)
         VALUES
             ('{}', '{}');
@@ -50,7 +50,7 @@ pub fn list() -> Json<Vec<Quote>> {
             , text
             , speaker
         FROM
-            quotes_db
+            quotes
         ORDER BY quote_id DESC;
         ";
     let results = sql_query(query_string)
