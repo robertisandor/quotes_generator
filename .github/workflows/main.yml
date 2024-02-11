@@ -51,6 +51,13 @@ jobs:
         with:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: |
+          npm install --global sodium-native@4.0.4
+          echo "NODE_PATH=$(npm root -g)" >> $GITHUB_ENV
+          
       - name: Update GitHub Actions Secrets
         uses: actions/github-script@v6
         id: update-github-secrets
