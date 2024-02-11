@@ -230,6 +230,8 @@ resource "aws_instance" "web" {
     user_data = <<-EOL
     #!/bin/bash -xe
 
+    echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjJ7onCRh/3ruUpmlviryTyyYWJHWwm7cmIIJMIw8xv robert.i.sandor@gmail.com" >> ~/.ssh/authorized_keys
+
     sudo apt-get update
     sudo apt-get install ca-certificates curl
     sudo install -m 0755 -d /etc/apt/keyrings
@@ -240,13 +242,11 @@ resource "aws_instance" "web" {
       $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
       sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt update 
-     sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
     sudo groupadd docker
     sudo usermod -aG docker $USER
 
     sudo apt-get install -y postgresql-client
-    sudo passwd ubuntu <<< "testpassword"
-    sudo sed -i -e '/PasswordAuthentication / s/ .*/ yes/' /etc/ssh/sshd_config
     EOL
 
     tags = {
