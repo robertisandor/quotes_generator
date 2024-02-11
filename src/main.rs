@@ -12,6 +12,10 @@ use rocket_contrib::json::Json;
 use diesel::RunQueryDsl;
 use diesel::sql_query;
 use serde_json::json;
+use log::LevelFilter;
+use log4rs::append::file::FileAppender;
+use log4rs::encode::pattern::PatternEncoder;
+use log4rs::config::{Appender, Config, Root};
 
 #[get("/")]
 fn index() -> Json<&'static str> {
@@ -20,7 +24,9 @@ fn index() -> Json<&'static str> {
 
 #[post("/quote", format = "json", data = "<quote>")]
 pub fn create_quote(quote: Json<NewQuote>) -> Json<String> {
+    log::info!("Creating db connection for /api/quote");
     let connection = &mut establish_connection_pg();
+    log::info!("Created db connection for /api/quote");
     let query_string = format! (r#"
         INSERT INTO quotes
             (text, speaker)
@@ -30,13 +36,16 @@ pub fn create_quote(quote: Json<NewQuote>) -> Json<String> {
     sql_query(query_string)
         .execute(connection)
         .expect("Error saving new post");
+    log::info!("Ran query for /api/quote");
     let status_string = json! ({"text": quote.text.to_string(),"speaker": quote.speaker.to_string(),"status":"Insertion successful"}).to_string();
     Json(status_string)
 }
 
 #[get("/all")]
 pub fn list() -> Json<Vec<Quote>> {
+    log::info!("Creating db connection for /api/all");
     let connection = &mut establish_connection_pg();
+    log::info!("Created db connection for /api/all");
     let query_string = "
         SELECT
             quote_id
@@ -49,6 +58,7 @@ pub fn list() -> Json<Vec<Quote>> {
     let results = sql_query(query_string)
         .load::<Quote>(connection)
         .expect("Error loading quotes");
+    log::info!("Ran query for /api/all");
     Json(results)
 }
 
@@ -58,6 +68,16 @@ fn not_found(req: &Request) -> String {
 }
 
 fn main() {
+    let logfile = FileAppender::builder()
+        .encoder(Box::new(PatternEncoder::new("{l} - {m}\n")))
+        .build("log/output.log")?;
+    let config = Config::builder()
+        .appender(Appender::builder().build("logfile", Box::new(logfile)))
+        .build(Root::builder()
+                   .appender("logfile")
+                   .build(LevelFilter::Info))?;
+
+    log4rs::init_config(config)?;
     rocket::ignite()
         .register(catchers![not_found])
         .mount("/api", routes![index, create_quote, list])
