@@ -58,7 +58,7 @@ jobs:
           DATABASE_USERNAME: postgres
         with:
           result-encoding: string
-          github-token: ${{ env.GH_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const sodium = require('sodium-native');
             const { data: {key: publicKey, key_id: keyId} } = await github.rest.actions.getRepoPublicKey({...context.repo});
