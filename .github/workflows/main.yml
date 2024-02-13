@@ -159,8 +159,8 @@ jobs:
         shell: /bin/bash --noprofile --norc -e -o pipefail {0}
         working-directory: ${{ env.CONFIG_DIRECTORYY }}
         run: |
-          output=${{ fromJSON(steps.plan-run.outputs.payload).data }}
-          echo $output
+          echo ${{ fromJSON(steps.plan-run.outputs.payload).data }}
+          echo ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data }}
           
 
       # - name: Set up Docker Buildx
