@@ -164,7 +164,7 @@ jobs:
         shell: /bin/bash --noprofile --norc -e -o pipefail {0}
         run: |
           output=$(terraform output ec2_hostname)
-          output_2=${{ steps.plan-output.outputs}}
+          output_2=${{ steps.plan-output.outputs.ec2_hostname}}
           echo $output
           echo $output_2
 
