@@ -10,8 +10,8 @@ terraform {
 
 }
 
-resource "aws_db_instance" "quotes_generator" {
-  identifier           = "quotes-generator"
+resource "aws_db_instance" "quotes_generator-test" {
+  identifier           = "quotes-generator-test"
   instance_class       = "db.t3.micro"
   allocated_storage    = 5
   engine               = "postgres"
