@@ -164,28 +164,34 @@ jobs:
       - name: Terraform Init
         run: terraform init
         shell: bash
+        working-directory: ${{ env.TF_WORKSPACE }}
 
       # Checks that all Terraform configuration files adhere to a canonical format
       - name: Terraform Format
         run: terraform fmt -check
         shell: bash
+        working-directory: ${{ env.TF_WORKSPACE }}
 
       # Generates an execution plan for Terraform
       - name: Terraform Plan
         run: terraform plan
         shell: bash
+        working-directory: ${{ env.TF_WORKSPACE }}
 
         # On push to master, build or change infrastructure according to Terraform configuration files
         # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
       - name: Terraform Apply
         run: terraform apply -auto-approve
         shell: bash
+        working-directory: ${{ env.TF_WORKSPACE }}
 
       - name: Plan Output Test
         shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+        working-directory: ${{ env.TF_WORKSPACE }}
         run: |
           output=$(terraform output ec2_hostname)
           echo $output
+          
 
       # - name: Set up Docker Buildx
       #   uses: docker/setup-buildx-action@v1
