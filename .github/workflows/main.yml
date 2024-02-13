@@ -74,6 +74,9 @@ jobs:
       - run: |
           npm install --global sodium-native@4.0.4
           echo "NODE_PATH=$(npm root -g)" >> $GITHUB_ENV
+
+      - name: Sanity Check
+        run: echo ${{ env.SERVER_HOST }}
           
       - name: Update GitHub Actions Secrets
         uses: actions/github-script@v6
