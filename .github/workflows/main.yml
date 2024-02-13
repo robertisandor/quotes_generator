@@ -39,27 +39,27 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Upload Configuration
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-        id: plan-upload
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          directory: "./terraform"
-          speculative: true
+      # - name: Upload Configuration
+      #   uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+      #   id: plan-upload
+      #   with:
+      #     workspace: ${{ env.TF_WORKSPACE }}
+      #     directory: "./terraform"
+      #     speculative: true
 
-      - name: Create Plan Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: plan-run
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
-          plan_only: true
+      # - name: Create Plan Run
+      #   uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
+      #   id: plan-run
+      #   with:
+      #     workspace: ${{ env.TF_WORKSPACE }}
+      #     configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
+      #     plan_only: true
 
-      - name: Get Plan Output
-        uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
-        id: plan-output
-        with:
-          plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
+      # - name: Get Plan Output
+      #   uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
+      #   id: plan-output
+      #   with:
+      #     plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
 
       # - uses: actions/setup-node@v3
       #   with:
@@ -139,34 +139,53 @@ jobs:
       #         core.error('Failed to fetch the public key. Unable to update secret');
       #       }
 
-      - name: Upload Configuration
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-        id: apply-upload
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          directory: "./terraform"
+      # - name: Upload Configuration
+      #   uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+      #   id: apply-upload
+      #   with:
+      #     workspace: ${{ env.TF_WORKSPACE }}
+      #     directory: "./terraform"
 
-      - name: Create Apply Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: apply-run
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
+      # - name: Create Apply Run
+      #   uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
+      #   id: apply-run
+      #   with:
+      #     workspace: ${{ env.TF_WORKSPACE }}
+      #     configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
 
-      - name: Apply
-        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
-        id: apply
-        with:
-          run: ${{ steps.apply-run.outputs.run_id }}
-          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+      # - name: Apply
+      #   uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
+      #   id: apply
+      #   with:
+      #     run: ${{ steps.apply-run.outputs.run_id }}
+      #     comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform Init
+        run: terraform init
+        shell: bash
+
+      # Checks that all Terraform configuration files adhere to a canonical format
+      - name: Terraform Format
+        run: terraform fmt -check
+        shell: bash
+
+      # Generates an execution plan for Terraform
+      - name: Terraform Plan
+        run: terraform plan
+        shell: bash
+
+        # On push to master, build or change infrastructure according to Terraform configuration files
+        # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        shell: bash
 
       - name: Plan Output Test
         shell: /bin/bash --noprofile --norc -e -o pipefail {0}
         run: |
           output=$(terraform output ec2_hostname)
-          output_2=${{ steps.plan-output.outputs.ec2_hostname}}
           echo $output
-          echo $output_2
 
       # - name: Set up Docker Buildx
       #   uses: docker/setup-buildx-action@v1
