@@ -58,7 +58,7 @@ jobs:
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
 
       - name: Sanity Check
-        run: echo $SERVER_HOST
+        run: echo "$SERVER_HOST"
   
   github-secrets:
     name: "Update GitHub Secrets"
