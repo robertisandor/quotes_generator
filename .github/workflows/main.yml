@@ -159,7 +159,7 @@ jobs:
         shell: /bin/bash --noprofile --norc -e -o pipefail {0}
         working-directory: ${{ env.CONFIG_DIRECTORYY }}
         run: |
-          output=${{ steps.plan-output.outputs.plan }}
+          output=${{ fromJSON(steps.plan-run.outputs.payload).data }}
           echo $output
           
 
