@@ -24,13 +24,15 @@ env:
   SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  deploy:
-    name: "Deploy"
+  terraform:
+    name: "Terraform"
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
       pull-requests: write
+    outputs:
+      SERVER_HOST: ${{ steps.terraform-apply.outputs.SERVER_HOST }}
     steps:
       - uses: actions/checkout@v3
 
@@ -52,136 +54,97 @@ jobs:
         # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
       - name: Terraform Apply
         id: terraform-apply
-        run: AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} terraform apply -auto-approve && ${{env.SERVER_HOST}}=$(terraform output ec2_hostname) 
+        run: AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} terraform apply -auto-approve && SERVER_HOST=$(terraform output ec2_hostname) >> $GITHUB_OUTPUT
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
-
-      # - name: Upload Configuration
-      #   uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-      #   id: plan-upload
-      #   with:
-      #     workspace: ${{ env.TF_WORKSPACE }}
-      #     directory: "./terraform"
-      #     speculative: true
-
-      # - name: Create Plan Run
-      #   uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-      #   id: plan-run
-      #   with:
-      #     workspace: ${{ env.TF_WORKSPACE }}
-      #     configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
-      #     plan_only: true
-
-      # - name: Get Plan Output
-      #   uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
-      #   id: plan-output
-      #   with:
-      #     plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
-
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 20
-      # - run: |
-      #     npm install --global sodium-native@4.0.4
-      #     echo "NODE_PATH=$(npm root -g)" >> $GITHUB_ENV
+  
+  github-secrets:
+    name: "Update GitHub Secrets"
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    needs: terraform
+    env:
+      SERVER_HOST: ${{ needs.terraform.outputs.SERVER_HOST }}
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: |
+          npm install --global sodium-native@4.0.4
+          echo "NODE_PATH=$(npm root -g)" >> $GITHUB_ENV
           
-      # - name: Update GitHub Actions Secrets
-      #   uses: actions/github-script@v6
-      #   id: update-github-secrets
-      #   with:
-      #     result-encoding: string
-      #     github-token: ${{ secrets.GH_TOKEN }}
-      #     script: |
-      #       const sodium = require('sodium-native');
-      #       const { data: {key: publicKey, key_id: keyId} } = await github.rest.actions.getRepoPublicKey({...context.repo});
-      #       if (publicKey) {
-      #         const key = Buffer.from(publicKey, 'base64');
-      #         const db_username_message = Buffer.from(process.env.DATABASE_USERNAME);
-      #         const db_password_message = Buffer.from(process.env.DATABASE_PASSWORD);
-      #         const db_url_message = Buffer.from(process.env.DATABASE_URL);
-      #         const server_host_message = Buffer.from(process.env.SERVER_HOST);
-      #         const server_username_message = Buffer.from(process.env.SERVER_USERNAME);
+      - name: Update GitHub Actions Secrets
+        uses: actions/github-script@v6
+        id: update-github-secrets
+        with:
+          result-encoding: string
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            const sodium = require('sodium-native');
+            const { data: {key: publicKey, key_id: keyId} } = await github.rest.actions.getRepoPublicKey({...context.repo});
+            if (publicKey) {
+              const key = Buffer.from(publicKey, 'base64');
+              const db_username_message = Buffer.from(process.env.DATABASE_USERNAME);
+              const db_password_message = Buffer.from(process.env.DATABASE_PASSWORD);
+              const db_url_message = Buffer.from(process.env.DATABASE_URL);
+              const server_host_message = Buffer.from(process.env.SERVER_HOST);
+              const server_username_message = Buffer.from(process.env.SERVER_USERNAME);
 
-      #         const ciphertext_db_username = Buffer.alloc(db_username_message.length + sodium.crypto_box_SEALBYTES);
-      #         const ciphertext_db_password = Buffer.alloc(db_password_message.length + sodium.crypto_box_SEALBYTES);
-      #         const ciphertext_db_url = Buffer.alloc(db_url_message.length + sodium.crypto_box_SEALBYTES);
-      #         const ciphertext_server_host = Buffer.alloc(server_host_message.length + sodium.crypto_box_SEALBYTES);
-      #         const ciphertext_server_username = Buffer.alloc(server_username_message.length + sodium.crypto_box_SEALBYTES);
+              const ciphertext_db_username = Buffer.alloc(db_username_message.length + sodium.crypto_box_SEALBYTES);
+              const ciphertext_db_password = Buffer.alloc(db_password_message.length + sodium.crypto_box_SEALBYTES);
+              const ciphertext_db_url = Buffer.alloc(db_url_message.length + sodium.crypto_box_SEALBYTES);
+              const ciphertext_server_host = Buffer.alloc(server_host_message.length + sodium.crypto_box_SEALBYTES);
+              const ciphertext_server_username = Buffer.alloc(server_username_message.length + sodium.crypto_box_SEALBYTES);
 
-      #         sodium.crypto_box_seal(ciphertext_db_username, db_username_message, key);
-      #         const encrypted_token_db_username = ciphertext_db_username.toString('base64');
-      #         await github.rest.actions.createOrUpdateRepoSecret({
-      #           ...context.repo, 
-      #           secret_name: 'DATABASE_USERNAME',
-      #           encrypted_value: encrypted_token_db_username,
-      #           key_id: keyId,
-      #         });
+              sodium.crypto_box_seal(ciphertext_db_username, db_username_message, key);
+              const encrypted_token_db_username = ciphertext_db_username.toString('base64');
+              await github.rest.actions.createOrUpdateRepoSecret({
+                ...context.repo, 
+                secret_name: 'DATABASE_USERNAME',
+                encrypted_value: encrypted_token_db_username,
+                key_id: keyId,
+              });
 
-      #         sodium.crypto_box_seal(ciphertext_db_password, db_password_message, key);
-      #         const encrypted_token_db_password = ciphertext_db_password.toString('base64');
-      #         await github.rest.actions.createOrUpdateRepoSecret({
-      #           ...context.repo, 
-      #           secret_name: 'DATABASE_PASSWORD',
-      #           encrypted_value: encrypted_token_db_password,
-      #           key_id: keyId,
-      #         });
+              sodium.crypto_box_seal(ciphertext_db_password, db_password_message, key);
+              const encrypted_token_db_password = ciphertext_db_password.toString('base64');
+              await github.rest.actions.createOrUpdateRepoSecret({
+                ...context.repo, 
+                secret_name: 'DATABASE_PASSWORD',
+                encrypted_value: encrypted_token_db_password,
+                key_id: keyId,
+              });
 
-      #         sodium.crypto_box_seal(ciphertext_db_url, db_url_message, key);
-      #         const encrypted_token_db_url = ciphertext_db_url.toString('base64');
-      #         await github.rest.actions.createOrUpdateRepoSecret({
-      #           ...context.repo, 
-      #           secret_name: 'DATABASE_URL',
-      #           encrypted_value: encrypted_token_db_url,
-      #           key_id: keyId,
-      #         });
+              sodium.crypto_box_seal(ciphertext_db_url, db_url_message, key);
+              const encrypted_token_db_url = ciphertext_db_url.toString('base64');
+              await github.rest.actions.createOrUpdateRepoSecret({
+                ...context.repo, 
+                secret_name: 'DATABASE_URL',
+                encrypted_value: encrypted_token_db_url,
+                key_id: keyId,
+              });
 
-      #         sodium.crypto_box_seal(ciphertext_server_host, server_host_message, key);
-      #         const encrypted_token_server_host = ciphertext_server_host.toString('base64');
-      #         await github.rest.actions.createOrUpdateRepoSecret({
-      #           ...context.repo, 
-      #           secret_name: 'SERVER_HOST',
-      #           encrypted_value: encrypted_token_server_host,
-      #           key_id: keyId,
-      #         });
+              sodium.crypto_box_seal(ciphertext_server_host, server_host_message, key);
+              const encrypted_token_server_host = ciphertext_server_host.toString('base64');
+              await github.rest.actions.createOrUpdateRepoSecret({
+                ...context.repo, 
+                secret_name: 'SERVER_HOST',
+                encrypted_value: encrypted_token_server_host,
+                key_id: keyId,
+              });
 
-      #         sodium.crypto_box_seal(ciphertext_server_username, server_username_message, key);
-      #         const encrypted_token_server_username = ciphertext_server_username.toString('base64');
-      #         await github.rest.actions.createOrUpdateRepoSecret({
-      #           ...context.repo, 
-      #           secret_name: 'SERVER_USERNAME',
-      #           encrypted_value: encrypted_token_server_username,
-      #           key_id: keyId,
-      #         });
-      #       } else {
-      #         core.error('Failed to fetch the public key. Unable to update secret');
-      #       }
-
-      # - name: Upload Configuration
-      #   uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-      #   id: apply-upload
-      #   with:
-      #     workspace: ${{ env.TF_WORKSPACE }}
-      #     directory: "./terraform"
-
-      # - name: Create Apply Run
-      #   uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-      #   id: apply-run
-      #   with:
-      #     workspace: ${{ env.TF_WORKSPACE }}
-      #     configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
-
-      # - name: Apply
-      #   uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
-      #   id: apply
-      #   with:
-      #     run: ${{ steps.apply-run.outputs.run_id }}
-      #     comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
-
-      # - name: Plan Output Test
-      #   shell: /bin/bash --noprofile --norc -e -o pipefail {0}
-      #   working-directory: ${{ env.CONFIG_DIRECTORYY }}
-      #   run: |
-      #     echo ${{ fromJSON(steps.plan-run.outputs.payload).data }}
-      #     echo ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data }}
+              sodium.crypto_box_seal(ciphertext_server_username, server_username_message, key);
+              const encrypted_token_server_username = ciphertext_server_username.toString('base64');
+              await github.rest.actions.createOrUpdateRepoSecret({
+                ...context.repo, 
+                secret_name: 'SERVER_USERNAME',
+                encrypted_value: encrypted_token_server_username,
+                key_id: keyId,
+              });
+            } else {
+              core.error('Failed to fetch the public key. Unable to update secret');
+            }
           
 
       # - name: Set up Docker Buildx
