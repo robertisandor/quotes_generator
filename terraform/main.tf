@@ -14,6 +14,7 @@ provider "aws" {
   region = "us-east-2"
 }
 
+/*
 resource "aws_db_instance" "quotes_generator" {
   identifier           = "quotes-generator"
   instance_class       = "db.t3.micro"
@@ -200,11 +201,13 @@ resource "aws_iam_user_group_membership" "admin_group_membership" {
     aws_iam_group.admin_group_test.name,
   ]
 }
+*/
 
 resource "aws_iam_user" "admin_user" {
   name = "admin_test"
 }
 
+/*
 resource "aws_iam_group_policy" "admin_policy" {
   name  = "admin_db_policy"
   group = aws_iam_group.admin_group_test.name
@@ -223,6 +226,7 @@ resource "aws_iam_group_policy" "admin_policy" {
         ]
     })
 }
+
 
 resource "aws_key_pair" "apiuser" {
     key_name   = "apiuser"
@@ -276,3 +280,4 @@ resource "aws_instance" "web" {
         Name = "QuotesApiWeb"
     }
 }
+*/

@@ -56,12 +56,6 @@ jobs:
         with:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
 
-      - name: Plan Output Test
-        shell: /bin/bash --noprofile --norc -e -o pipefail {0}
-        run: |
-          output=$(terraform output ec2_hostname)
-          echo $output
-
       # - uses: actions/setup-node@v3
       #   with:
       #     node-version: 20
@@ -140,26 +134,33 @@ jobs:
       #         core.error('Failed to fetch the public key. Unable to update secret');
       #       }
 
-      # - name: Upload Configuration
-      #   uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-      #   id: apply-upload
-      #   with:
-      #     workspace: ${{ env.TF_WORKSPACE }}
-      #     directory: "./terraform"
+      - name: Upload Configuration
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+        id: apply-upload
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          directory: "./terraform"
 
-      # - name: Create Apply Run
-      #   uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-      #   id: apply-run
-      #   with:
-      #     workspace: ${{ env.TF_WORKSPACE }}
-      #     configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
+      - name: Create Apply Run
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
+        id: apply-run
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
 
-      # - name: Apply
-      #   uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
-      #   id: apply
-      #   with:
-      #     run: ${{ steps.apply-run.outputs.run_id }}
-      #     comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+      - name: Apply
+        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
+        id: apply
+        with:
+          run: ${{ steps.apply-run.outputs.run_id }}
+          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+
+      - name: Plan Output Test
+        shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+        run: |
+          output=$(terraform output ec2_hostname)
+          output_2=${{ steps.plan-output.outputs}}
+          echo $output
 
       # - name: Set up Docker Buildx
       #   uses: docker/setup-buildx-action@v1
