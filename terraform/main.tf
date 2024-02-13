@@ -227,7 +227,6 @@ resource "aws_iam_group_policy" "admin_policy" {
     })
 }
 
-
 resource "aws_key_pair" "apiuser" {
     key_name   = "apiuser"
     public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjJ7onCRh/3ruUpmlviryTyyYWJHWwm7cmIIJMIw8xv robert.i.sandor@gmail.com"

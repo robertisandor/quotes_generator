@@ -1,3 +1,4 @@
+/*
 output "rds_hostname" {
   description = "RDS instance hostname"
   value       = aws_db_instance.quotes_generator.address
@@ -15,7 +16,7 @@ output "rds_username" {
   value       = aws_db_instance.quotes_generator.username
   sensitive   = true
 }
-
+*/
 output "ec2_hostname" {
   value	      = aws_instance.web.public_ip
 }
