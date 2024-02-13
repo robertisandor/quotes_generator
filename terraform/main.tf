@@ -201,13 +201,11 @@ resource "aws_iam_user_group_membership" "admin_group_membership" {
     aws_iam_group.admin_group_test.name,
   ]
 }
-*/
 
 resource "aws_iam_user" "admin_user" {
   name = "admin_test"
 }
 
-/*
 resource "aws_iam_group_policy" "admin_policy" {
   name  = "admin_db_policy"
   group = aws_iam_group.admin_group_test.name
@@ -226,9 +224,10 @@ resource "aws_iam_group_policy" "admin_policy" {
         ]
     })
 }
+*/
 
 resource "aws_key_pair" "apiuser" {
-    key_name   = "apiuser"
+    key_name   = "apiuser_test"
     public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjJ7onCRh/3ruUpmlviryTyyYWJHWwm7cmIIJMIw8xv robert.i.sandor@gmail.com"
 }
 
@@ -279,4 +278,3 @@ resource "aws_instance" "web" {
         Name = "QuotesApiWeb"
     }
 }
-*/
