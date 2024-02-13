@@ -10,36 +10,6 @@ terraform {
 
 }
 
-resource "aws_db_instance" "quotes_generator-test" {
-  identifier           = "quotes-generator-test"
-  instance_class       = "db.t3.micro"
-  allocated_storage    = 5
-  engine               = "postgres"
-  engine_version       = "15.4"
-  db_name              = "quotes_db"
-  username             = "postgres"
-  password             = var.db_password
-#   db_subnet_group_name = aws_db_subnet_group.quotes_1.name
-  parameter_group_name = aws_db_parameter_group.quotes_generator.name
-  publicly_accessible  = false
-  skip_final_snapshot  = true
-}
-
-resource "aws_db_parameter_group" "quotes_generator" {
-  name   = "quotes-generator"
-  family = "postgres15"
-
-  parameter {
-    name  = "log_connections"
-    value = "1"
-  }
-
-  parameter {
-    name = "rds.force_ssl"
-    value = "0"
-  }
-}
-
 provider "aws" {
   region = "us-east-2"
 }
