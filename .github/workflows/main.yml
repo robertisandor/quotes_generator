@@ -51,8 +51,13 @@ jobs:
         # On push to master, build or change infrastructure according to Terraform configuration files
         # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} terraform apply -auto-approve
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
+
+      - name: Call terraform output
+        run: |
+          output=$(terraform output ec2_hostname)
+          echo $output
 
       # - name: Upload Configuration
       #   uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
