@@ -81,7 +81,7 @@ jobs:
           echo "NODE_PATH=$(npm root -g)" >> $GITHUB_ENV
 
       - name: Sanity Check
-        run: echo ${{ env.SERVER_HOST }}
+        run: echo SERVER_HOST=["$SERVER_HOST"] && echo env.SERVER_HOST=${{ env.SERVER_HOST }}
           
       - name: Update GitHub Actions Secrets
         uses: actions/github-script@v6
