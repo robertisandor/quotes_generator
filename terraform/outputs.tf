@@ -1,5 +1,7 @@
 output "ec2_hostname" {
+  description = "EC2 instance public IP"
   value	      = aws_instance.web.public_ip
+  sensitive   = true
 }
 
 output "rds_hostname" {
@@ -8,14 +10,14 @@ output "rds_hostname" {
   sensitive   = true
 }
 
-output "rds_port" {
-  description = "RDS instance port"
-  value       = aws_db_instance.quotes_generator.port
-  sensitive   = true
-}
-
 output "rds_username" {
   description = "RDS instance root username"
   value       = aws_db_instance.quotes_generator.username
+  sensitive   = true
+}
+
+output "rds_password" {
+  description = "RDS instance root password"
+  value       = aws_db_instance.quotes_generator.password
   sensitive   = true
 }

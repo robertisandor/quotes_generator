@@ -24,8 +24,8 @@ env:
   SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  terraform:
-    name: "Terraform"
+  deploy:
+    name: "Deploy"
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -61,16 +61,8 @@ jobs:
           echo SERVER_HOST=$(terraform output ec2_hostname) >> $GITHUB_ENV;
           echo DATABASE_URL=$(terraform output rds_hostname) >> $GITHUB_ENV;
           echo DATABASE_USERNAME=$(terraform output rds_username) >> $GITHUB_ENV;
+          echo DATABASE_PASSWORD=$(terraform output rds_password) >> $GITHUB_ENV;
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
-
-      - name: Sanity Check
-        run: >-
-          echo SERVER_HOST=["$SERVER_HOST"];
-          echo env.SERVER_HOST=${{ env.SERVER_HOST }};
-          echo DATABASE_URL=["$DATABASE_URL"];
-          echo env.DATABASE_URL=${{ env.DATABASE_URL }};
-          echo DATABASE_USERNAME=["$DATABASE_USERNAME"];
-          echo env.DATABASE_USERNAME=${{ env.DATABASE_USERNAME }};
   
       - uses: actions/setup-node@v3
         with:
@@ -94,13 +86,11 @@ jobs:
               const db_password_message = Buffer.from(process.env.DATABASE_PASSWORD);
               const db_url_message = Buffer.from(process.env.DATABASE_URL);
               const server_host_message = Buffer.from(process.env.SERVER_HOST);
-              const server_username_message = Buffer.from(process.env.SERVER_USERNAME);
 
               const ciphertext_db_username = Buffer.alloc(db_username_message.length + sodium.crypto_box_SEALBYTES);
               const ciphertext_db_password = Buffer.alloc(db_password_message.length + sodium.crypto_box_SEALBYTES);
               const ciphertext_db_url = Buffer.alloc(db_url_message.length + sodium.crypto_box_SEALBYTES);
               const ciphertext_server_host = Buffer.alloc(server_host_message.length + sodium.crypto_box_SEALBYTES);
-              const ciphertext_server_username = Buffer.alloc(server_username_message.length + sodium.crypto_box_SEALBYTES);
 
               sodium.crypto_box_seal(ciphertext_db_username, db_username_message, key);
               const encrypted_token_db_username = ciphertext_db_username.toString('base64');
@@ -137,51 +127,42 @@ jobs:
                 encrypted_value: encrypted_token_server_host,
                 key_id: keyId,
               });
-
-              sodium.crypto_box_seal(ciphertext_server_username, server_username_message, key);
-              const encrypted_token_server_username = ciphertext_server_username.toString('base64');
-              await github.rest.actions.createOrUpdateRepoSecret({
-                ...context.repo, 
-                secret_name: 'SERVER_USERNAME',
-                encrypted_value: encrypted_token_server_username,
-                key_id: keyId,
-              });
             } else {
               core.error('Failed to fetch the public key. Unable to update secret');
             }
           
 
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      # - name: Log in to Docker Hub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
-      #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: risandor/quotes_generator:0.1.0
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: risandor/quotes_generator:0.1.0
 
-      # - name: Deploy to server via SSH
-      #   uses: appleboy/ssh-action@v1.0.0
-      #   with:
-      #     host: ${{ secrets.SERVER_HOST }}
-      #     username: ${{ secrets.SERVER_USERNAME }}
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     port: 22
-      #     script: |
-      #       CI=true echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
-      #       CI=true echo DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} >> .env
-      #       CI=true echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
-      #       CI=true docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      #       CI=true docker stop quotes-generator
-      #       CI=true docker image prune -a
-      #       CI=true docker pull risandor/quotes_generator:0.1.0
-      #       CI=true docker rm quotes-generator
-      #       CI=true docker run --name=quotes-generator --env-file .env -d -p 80:8000 risandor/quotes_generator:0.1.0
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            CI=true echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
+            CI=true echo DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} >> .env
+            CI=true echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
+            CI=true docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+            CI=true docker stop quotes-generator
+            CI=true docker image prune -a
+            CI=true docker pull risandor/quotes_generator:0.1.0
+            CI=true docker rm quotes-generator
+            CI=true docker run --name=quotes-generator --env-file .env -d -p 80:8000 risandor/quotes_generator:0.1.0
             
