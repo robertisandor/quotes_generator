@@ -162,7 +162,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_access" {
   description       = "Rule to allow SSH connections from internet to reach EC2"
   cidr_ipv4         = aws_vpc.quotes_main.cidr_block
   from_port         = 22
-  ip_protocol       = "ssh"
+  ip_protocol       = "-1"
   to_port           = 22
 }
 
