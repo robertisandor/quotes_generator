@@ -60,28 +60,14 @@ jobs:
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
 
       - name: Sanity Check
-        run: echo SERVER_HOST=["$SERVER_HOST"] && echo "$GITHUB_CONTEXT"
+        run: echo SERVER_HOST=["$SERVER_HOST"] && echo env.SERVER_HOST=${{ env.SERVER_HOST }}
   
-  github-secrets:
-    name: "Update GitHub Secrets"
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
-    needs: terraform
-    env:
-      SERVER_HOST: ${{ needs.terraform.outputs.SERVER_HOST }}
-    steps:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
       - run: |
           npm install --global sodium-native@4.0.4
           echo "NODE_PATH=$(npm root -g)" >> $GITHUB_ENV
-
-      - name: Sanity Check
-        run: echo SERVER_HOST=["$SERVER_HOST"] && echo env.SERVER_HOST=${{ env.SERVER_HOST }}
           
       - name: Update GitHub Actions Secrets
         uses: actions/github-script@v6
