@@ -52,15 +52,23 @@ jobs:
         run: AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} terraform plan
         working-directory: ${{ env.CONFIG_DIRECTORY }}
 
-        # On push to master, build or change infrastructure according to Terraform configuration files
-        # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+      # On push to master, build or change infrastructure according to Terraform configuration files
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
       - name: Terraform Apply
         id: terraform-apply
-        run: AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} terraform apply -auto-approve && SERVER_HOST=$(terraform output ec2_hostname) && echo SERVER_HOST=[$SERVER_HOST] && echo SERVER_HOST=$SERVER_HOST >> $GITHUB_ENV 
+        run: AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} terraform apply -auto-approve && \
+          echo SERVER_HOST=$(terraform output ec2_hostname) >> $GITHUB_ENV && \
+          echo DATABASE_URL=$(terraform output rds_hostname) >> $GITHUB_ENV && \
+          echo DATABASE_USERNAME=$(terraform output rds_username) >> $GITHUB_ENV
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
 
       - name: Sanity Check
-        run: echo SERVER_HOST=["$SERVER_HOST"] && echo env.SERVER_HOST=${{ env.SERVER_HOST }}
+        run: echo SERVER_HOST=["$SERVER_HOST"] && \
+          echo env.SERVER_HOST=${{ env.SERVER_HOST }} && \
+          echo DATABASE_URL=["$DATABASE_URL"] && \
+          echo env.DATABASE_URL=${{ env.DATABASE_URL }} && \
+          echo DATABASE_USERNAME=["$DATABASE_USERNAME"] && \
+          echo env.DATABASE_USERNAME=${{ env.DATABASE_USERNAME }}
   
       - uses: actions/setup-node@v3
         with:
