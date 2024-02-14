@@ -222,7 +222,6 @@ resource "aws_iam_group_policy" "admin_policy" {
         ]
     })
 }
-*/
 
 resource "aws_key_pair" "apiuser" {
     key_name   = "apiuser"
