@@ -95,7 +95,3 @@ resource "aws_instance" "web" {
         Name = "QuotesApiWeb"
     }
 }
-
-resource "aws_iam_user" "dummy_admin_user" {
-  name = "dummy_admin_test"
-}
