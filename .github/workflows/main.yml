@@ -44,7 +44,7 @@ jobs:
 
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
-        run: terraform init -secret-key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -access-key=${{ secrets.AWS_ACCESS_KEY_ID }}
+        run: terraform init -backend_config="secret-key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -backend-config="access-key=${{ secrets.AWS_ACCESS_KEY_ID }}"
         working-directory: ${{ env.CONFIG_DIRECTORY }}
 
       # Generates an execution plan for Terraform
