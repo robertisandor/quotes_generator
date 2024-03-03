@@ -53,8 +53,7 @@ jobs:
       - name: Terraform Init
         run: >-
           terraform init -migrate-state;
-          terraform import aws_kms_alias.key-alias alias/quotes-generator-terraform-bucket-key;
-          terraform import aws_dynamodb_table.terraform_state terraform_state;
+          terraform import aws_dynamodb_table.terraform-state terraform-state;
           terraform import aws_db_parameter_group.quotes_generator quotes-generator;
           terraform import aws_iam_group.admin_group_test admin_group_test;
           terraform import aws_iam_user.admin_user admin_test;
