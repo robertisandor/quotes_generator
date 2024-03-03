@@ -86,7 +86,7 @@ resource "aws_db_instance" "quotes_generator" {
   instance_class       = "db.t3.micro"
   allocated_storage    = 5
   engine               = "postgres"
-  engine_version       = "15.4"
+  engine_version       = "15.5"
   db_name              = "quotes_db"
   username             = "postgres"
   password             = var.db_password
@@ -224,12 +224,12 @@ resource "aws_security_group" "default" {
   vpc_id      = aws_vpc.quotes_main.id
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_ssh_access" {
+resource "aws_security_group_rule" "allow_ssh_access" {
   security_group_id = aws_security_group.default.id
   description       = "Rule to allow SSH connections from internet to reach EC2"
   cidr_ipv4         = aws_vpc.quotes_main.cidr_block
   from_port         = 22
-  ip_protocol       = "-1"
+  protocol          = "tcp"
   to_port           = 22
 }
 
