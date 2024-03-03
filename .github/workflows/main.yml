@@ -52,7 +52,9 @@ jobs:
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: >-
-          terraform init -input=false;
+          terraform init;
+          sleep 10;
+          echo "yes";
         working-directory: ${{ env.CONFIG_DIRECTORY }}
 
       # Generates an execution plan for Terraform
