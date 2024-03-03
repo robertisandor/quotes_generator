@@ -53,11 +53,13 @@ jobs:
       - name: Terraform Init
         run: >-
           terraform init -migrate-state;
+          terraform import aws_s3_bucket.quotes-generator quotes-generator;
         working-directory: ${{ env.CONFIG_DIRECTORY }}
 
       # Generates an execution plan for Terraform
       - name: Terraform Plan
-        run: terraform plan
+        run: >-
+          terraform plan;
         working-directory: ${{ env.CONFIG_DIRECTORY }}
 
       # On push to master, build or change infrastructure according to Terraform configuration files
