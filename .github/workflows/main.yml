@@ -53,7 +53,7 @@ jobs:
       - name: Terraform Init
         run: >-
           terraform init;
-          sleep 10;
+          sleep 1;
           echo "yes";
         working-directory: ${{ env.CONFIG_DIRECTORY }}
 
