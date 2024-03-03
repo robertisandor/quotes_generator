@@ -42,6 +42,13 @@ jobs:
         with:
           terraform_wrapper: false
 
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::487577641151:role/github-actions-role
+          aws-region: us-west-2
+        
+
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: >-
