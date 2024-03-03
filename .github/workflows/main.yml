@@ -53,8 +53,6 @@ jobs:
       - name: Terraform Init
         run: >-
           terraform init -migrate-state;
-          terraform import aws_db_instance.quotes_generator quotes-generator;
-          terraform import aws_vpc_security_group_ingress_rule.allow_ssh_access sgr-0523737d8449741e7;
         working-directory: ${{ env.CONFIG_DIRECTORY }}
 
       # Generates an execution plan for Terraform
