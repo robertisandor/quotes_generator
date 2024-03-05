@@ -69,7 +69,7 @@ jobs:
           terraform apply -auto-approve;
           terraform state pull;
           echo sanity check "$(terraform output -raw ec2_hostname)";
-          echo SERVER_HOST=$(terraform output ec2_hostname) >> $GITHUB_ENV;
+          echo SERVER_HOST=$(terraform output -raw ec2_hostname) >> $GITHUB_ENV;
           echo DATABASE_URL=$(terraform output rds_hostname) >> $GITHUB_ENV;
           echo DATABASE_USERNAME=$(terraform output rds_username) >> $GITHUB_ENV;
           echo DATABASE_PASSWORD=$(terraform output rds_password) >> $GITHUB_ENV;
