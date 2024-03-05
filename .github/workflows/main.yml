@@ -69,6 +69,9 @@ jobs:
           terraform apply -auto-approve;
           terraform state pull;
           echo sanity check "$(terraform output -raw ec2_hostname)";
+          echo sanity check "$(terraform output -raw rds_hostname)";
+          echo sanity check "$(terraform output -raw rds_username)";
+          echo sanity check "$(terraform output -raw rds_password)";
           echo SERVER_HOST=$(terraform output -raw ec2_hostname) >> $GITHUB_ENV;
           echo DATABASE_URL=$(terraform output rds_hostname) >> $GITHUB_ENV;
           echo DATABASE_USERNAME=$(terraform output rds_username) >> $GITHUB_ENV;
@@ -167,7 +170,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           fingerprint: ${{ secrets.FINGERPRINT }}
           port: 22
-          debug: true
           script: |
             CI=true echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
             CI=true echo DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} >> .env
