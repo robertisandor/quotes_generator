@@ -167,6 +167,7 @@ jobs:
           port: 22
           debug: true
           script: |
+            CI=true echo ${{ secrets.SERVER_HOST }}
             CI=true echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
             CI=true echo DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} >> .env
             CI=true echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
