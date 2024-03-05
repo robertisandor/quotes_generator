@@ -67,6 +67,7 @@ jobs:
         id: terraform-apply
         run: >-
           terraform apply -auto-approve;
+          echo sanity check "$(terraform output ec2_hostname)"
           echo SERVER_HOST=$(terraform output ec2_hostname) >> $GITHUB_ENV;
           echo DATABASE_URL=$(terraform output rds_hostname) >> $GITHUB_ENV;
           echo DATABASE_USERNAME=$(terraform output rds_username) >> $GITHUB_ENV;
@@ -171,5 +172,9 @@ jobs:
             CI=true echo DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} >> .env
             CI=true echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
             CI=true docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-            
+            CI=true docker stop quotes-generator
+            CI=true docker image prune -a
+            CI=true docker pull risandor/quotes_generator:0.1.0
+            CI=true docker rm quotes-generator
+            CI=true docker run --name=quotes-generator --env-file .env -d -p 80:8000 risandor/quotes_generator:0.1.0
             
