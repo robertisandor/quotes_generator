@@ -71,11 +71,6 @@ jobs:
         id: terraform-apply
         run: >-
           terraform apply -auto-approve;
-          echo SERVER_HOST=$(terraform state pull | jq -r '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.attributes.key_name=="apiuser") | .attributes.public_dns');
-          echo SERVER_HOST=$(terraform state pull | jq -r '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.attributes.key_name=="apiuser") | .attributes.public_ip');
-          echo DATABASE_URL=$(terraform state pull | jq -r '.resources[] | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | select(.attributes.id=="quotes-generator") | .attributes.address');
-          echo DATABASE_USERNAME=$(terraform state pull | jq -r '.resources[] | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | select(.attributes.id=="quotes-generator") | .attributes.username');
-          echo DATABASE_PASSWORD=$(terraform state pull | jq -r '.resources[] | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | select(.attributes.id=="quotes-generator") | .attributes.password');
           echo SERVER_HOST=$(terraform state pull | jq -r '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.attributes.key_name=="apiuser") | .attributes.public_ip') >> $GITHUB_ENV;
           echo DATABASE_URL=$(terraform state pull | jq -r '.resources[] | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | select(.attributes.id=="quotes-generator") | .attributes.address') >> $GITHUB_ENV;
           echo DATABASE_USERNAME=$(terraform state pull | jq -r '.resources[] | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | select(.attributes.id=="quotes-generator") | .attributes.username') >> $GITHUB_ENV;
