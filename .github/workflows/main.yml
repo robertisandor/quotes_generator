@@ -67,10 +67,8 @@ jobs:
         id: terraform-apply
         run: >-
           terraform apply -auto-approve;
+          apt install jq;
           echo terraform state pull | jq '.resources[]' | select(.type=="aws_instance" and .name=="web") | .instances[] | .select(.key_name=="apiuser") | .values.public_dns;
-          echo $(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.address);
-          echo $(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.username);
-          echo $(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.password);
           echo SERVER_HOST=$(terraform state pull | jq '.resources[]' | select(.type=="aws_instance" and .name=="web") | .instances[] | .select(.key_name=="apiuser") | .values.public_dns) >> $GITHUB_ENV;
           echo DATABASE_URL=$(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.address) >> $GITHUB_ENV;
           echo DATABASE_USERNAME=$(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.username) >> $GITHUB_ENV;
