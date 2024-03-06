@@ -67,10 +67,14 @@ jobs:
         id: terraform-apply
         run: >-
           terraform apply -auto-approve;
-          echo 'aws_instance.web.public_ip "$(terraform state show 'aws_instance.web.public_ip')"';
-          echo 'aws_db_instance.quotes_generator.address "$(terraform state show 'aws_db_instance.quotes_generator.address')"';
-          echo 'aws_db_instance.quotes_generator.password "$(terraform state show 'aws_db_instance.quotes_generator.password')"';
-          echo 'aws_db_instance.quotes_generator.username "$(terraform state show 'aws_db_instance.quotes_generator.username')"';
+          echo aws_instance.web.public_ip;
+          echo $(terraform state show 'aws_instance.web.public_ip');
+          echo aws_db_instance.quotes_generator.address; 
+          echo $(terraform state show 'aws_db_instance.quotes_generator.address');
+          echo aws_db_instance.quotes_generator.password;
+          echo $(terraform state show 'aws_db_instance.quotes_generator.password');
+          echo aws_db_instance.quotes_generator.username;
+          echo $(terraform state show 'aws_db_instance.quotes_generator.username');
           echo ec2_hostname "$(terraform output -raw ec2_hostname)";
           echo rds_hostname "$(terraform output -raw rds_hostname)";
           echo rds_username "$(terraform output -raw rds_username)";
