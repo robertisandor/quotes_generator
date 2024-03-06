@@ -67,12 +67,14 @@ jobs:
         id: terraform-apply
         run: >-
           terraform apply -auto-approve;
-          echo aws_instance.web.public_ip;
-          terraform state pull;
+          echo $(terraform state pull | jq '.resources[]' | select(.type=="aws_instance" and .name=="web") | .instances[] | .select(.key_name=="apiuser") | .values.public_dns)
+          echo $(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.address)
+          echo $(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.username)
+          echo $(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.password)
           echo SERVER_HOST=$(terraform output -raw ec2_hostname) >> $GITHUB_ENV;
-          echo DATABASE_URL=$(terraform output rds_hostname) >> $GITHUB_ENV;
-          echo DATABASE_USERNAME=$(terraform output rds_username) >> $GITHUB_ENV;
-          echo DATABASE_PASSWORD=$(terraform output rds_password) >> $GITHUB_ENV;
+          echo DATABASE_URL=$(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.address) >> $GITHUB_ENV;
+          echo DATABASE_USERNAME=$(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.username) >> $GITHUB_ENV;
+          echo DATABASE_PASSWORD=$(terraform state pull | jq '.resources[]' | select(.type=="aws_db_instance" and .name=="quotes_generator") | .instances[] | .select(.id=="quotes-generator") | .values.password) >> $GITHUB_ENV;
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
   
       - uses: actions/setup-node@v3
