@@ -71,11 +71,8 @@ jobs:
         id: terraform-apply
         run: >-
           terraform apply -auto-approve;
-          terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[]';
-          terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.attributes.key_name=="apiuser")';
-          echo $(terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.attributes.key_name=="apiuser")');
-          echo $(terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.attributes.key_name=="apiuser") | .attributes.public_dns');
-          echo SERVER_HOST=$(terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.attributes.key_name=="apiuser") | .attributes.public_dns');
+          echo $(terraform state pull | jq -r '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.attributes.key_name=="apiuser") | .attributes.public_dns');
+          echo SERVER_HOST=$(terraform state pull | jq -r '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.attributes.key_name=="apiuser") | .attributes.public_dns');
           
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
   
