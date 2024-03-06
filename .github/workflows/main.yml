@@ -71,8 +71,8 @@ jobs:
         id: terraform-apply
         run: >-
           terraform apply -auto-approve;
-          echo $(terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.key_name=="apiuser")'
-          echo $(terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.key_name=="apiuser") | .values.public_dns')
+          echo $(terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.key_name=="apiuser")');
+          echo $(terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.key_name=="apiuser") | .values.public_dns');
           echo SERVER_HOST=$(terraform state pull | jq '.resources[] | select(.type=="aws_instance" and .name=="web") | .instances[] | select(.key_name=="apiuser") | .values.public_dns');
           
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
