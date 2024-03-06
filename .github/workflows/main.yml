@@ -67,7 +67,6 @@ jobs:
         id: terraform-apply
         run: >-
           terraform apply -auto-approve;
-          terraform state pull;
           echo 'aws_instance.web.public_ip "$(terraform state show 'aws_instance.web.public_ip')"';
           echo 'aws_db_instance.quotes_generator.address "$(terraform state show 'aws_db_instance.quotes_generator.address')"';
           echo 'aws_db_instance.quotes_generator.password "$(terraform state show 'aws_db_instance.quotes_generator.password')"';
