@@ -68,7 +68,7 @@ jobs:
         run: >-
           terraform apply -auto-approve;
           apt install jq;
-          echo terraform state pull | jq '.resources[]' | select(.type=="aws_instance" and .name=="web") | .instances[] | .select(.key_name=="apiuser") | .values.public_dns;
+          echo terraform state pull | jq '.resources[]';
           
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
   
