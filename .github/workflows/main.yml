@@ -71,7 +71,7 @@ jobs:
         id: terraform-apply
         run: >-
           terraform apply -auto-approve;
-          echo terraform state pull | jq -r '.resources[]';
+          terraform state pull | jq -r '.resources[]';
           
         working-directory: ${{ env.CONFIG_DIRECTORY }} 
   
