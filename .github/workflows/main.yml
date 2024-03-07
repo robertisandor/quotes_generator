@@ -192,10 +192,10 @@ jobs:
             CI=true echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
             CI=true echo DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} >> .env
             CI=true echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
-            CI=true docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-            CI=true docker stop quotes-generator
-            CI=true docker image prune -a
-            CI=true docker pull risandor/quotes_generator:0.1.0
-            CI=true docker rm quotes-generator
-            CI=true docker run --name=quotes-generator --env-file .env -d -p 80:8000 risandor/quotes_generator:0.1.0
+            CI=true sudo docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+            CI=true sudo docker stop quotes-generator || true
+            CI=true sudo docker image prune -a -f
+            CI=true sudo docker pull risandor/quotes_generator:0.1.0
+            CI=true sudo docker rm quotes-generator || true
+            CI=true sudo docker run --name=quotes-generator --env-file .env -d -p 80:8000 risandor/quotes_generator:0.1.0
             
