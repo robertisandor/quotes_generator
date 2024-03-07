@@ -227,7 +227,7 @@ resource "aws_security_group" "default" {
 resource "aws_security_group_rule" "allow_ssh_access" {
   security_group_id = aws_security_group.default.id
   description       = "Rule to allow SSH connections from internet to reach EC2"
-  cidr_blocks       = [aws_vpc.quotes_main.cidr_block]
+  cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 22
   protocol          = "tcp"
   to_port           = 22

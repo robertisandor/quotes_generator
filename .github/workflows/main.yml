@@ -24,15 +24,13 @@ env:
   SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  deploy:
-    name: "Deploy"
+  deploy_terraform:
+    name: "Deploy Terraform"
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
       pull-requests: write
-    outputs:
-      SERVER_HOST: ${{ steps.terraform-apply.outputs.SERVER_HOST }}
     steps:
       - uses: actions/checkout@v3
 
@@ -144,8 +142,15 @@ jobs:
             } else {
               core.error('Failed to fetch the public key. Unable to update secret');
             }
-          
-
+  deploy_code:        
+    name: "Deploy Code"
+    runs-on: ubuntu-latest
+    needs: deploy_terraform
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
