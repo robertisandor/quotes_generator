@@ -142,7 +142,7 @@ jobs:
             } else {
               core.error('Failed to fetch the public key. Unable to update secret');
             }
-            
+
   deploy_docker_image:        
     name: "Build & Push Docker Image"
     runs-on: ubuntu-latest
@@ -187,7 +187,6 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          fingerprint: ${{ secrets.FINGERPRINT }}
           port: 22
           script: |
             CI=true echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
