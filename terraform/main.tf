@@ -130,23 +130,26 @@ resource "aws_route_table" "quotes_route_table" {
 }
 
 resource "aws_subnet" "quotes_1" {
-  cidr_block = "172.31.0.0/20"
-  vpc_id     = aws_vpc.quotes_main.id
+  cidr_block        = "172.31.0.0/20"
+  vpc_id            = aws_vpc.quotes_main.id
+  availability_zone = "us-east-2a"
 }
 
 resource "aws_subnet" "quotes_2" {
-  cidr_block = "172.31.16.0/20"
-  vpc_id     = aws_vpc.quotes_main.id
+  cidr_block        = "172.31.16.0/20"
+  vpc_id            = aws_vpc.quotes_main.id
+  availability_zone = "us-east-2b"
 }
 
 resource "aws_subnet" "quotes_3" {
-  cidr_block = "172.31.32.0/20"
-  vpc_id     = aws_vpc.quotes_main.id
+  cidr_block        = "172.31.32.0/20"
+  vpc_id            = aws_vpc.quotes_main.id
+  availability_zone = "us-east-2c"
 }
 
 resource "aws_db_subnet_group" "quotes_subnet_group" {
   name = "quotes_subnet_group"
-  subnet_ids = [aws_subnet.quotes_1.id, aws_subnet.quotes_2.id, aws_subnet.quotes_2.id]
+  subnet_ids = [aws_subnet.quotes_1.id, aws_subnet.quotes_2.id, aws_subnet.quotes_3.id]
 }
 
 resource "aws_vpc_dhcp_options" "quotes_dns_resolver" {
