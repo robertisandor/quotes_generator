@@ -129,6 +129,21 @@ resource "aws_route_table" "quotes_route_table" {
   }
 }
 
+resource "aws_route_table_association" "quotes_1" {
+  subnet_id      = aws_subnet.quotes_1.id
+  route_table_id = aws_route_table.quotes_route_table.id
+}
+
+resource "aws_route_table_association" "quotes_2" {
+  subnet_id      = aws_subnet.quotes_2.id
+  route_table_id = aws_route_table.quotes_route_table.id
+}
+
+resource "aws_route_table_association" "quotes_3" {
+  subnet_id      = aws_subnet.quotes_3.id
+  route_table_id = aws_route_table.quotes_route_table.id
+}
+
 resource "aws_subnet" "quotes_1" {
   cidr_block        = "172.31.0.0/20"
   vpc_id            = aws_vpc.quotes_main.id
