@@ -124,8 +124,14 @@ resource "aws_route_table" "quotes_route_table" {
   vpc_id = aws_vpc.quotes_main.id
 
   route {
-    cidr_block        = "0.0.0.0/0"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.quotes_gateway.id
+  }
+
+  # since this is exactly the route AWS will create, the route will be adopted
+  route {
+    cidr_block = "10.1.0.0/16"
+    gateway_id = "local"
   }
 }
 
