@@ -137,7 +137,7 @@ resource "aws_route_table" "quotes_route_table" {
   }
 
   route {
-    cidr_block = "172.31.0.0/20"
+    cidr_block = "172.31.0.0/24"
     network_interface_id = aws_network_interface.rds_network_interface.id
   }
 }
