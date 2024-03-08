@@ -27,7 +27,7 @@ resource "aws_s3_bucket" "quotes-generator" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "quotes" {
-  bucket = aws_s3_bucket.quotes_generator.id 
+  bucket = aws_s3_bucket.quotes-generator.id 
 
   rule {
     apply_server_side_encryption_by_default {
