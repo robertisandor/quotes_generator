@@ -24,13 +24,15 @@ provider "aws" {
 
 resource "aws_s3_bucket" "quotes-generator" {
   bucket = "quotes-generator"
+}
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.quotes-generator-terraform-bucket-key.arn
-        sse_algorithm     = "aws:kms"
-      }
+resource "aws_s3_bucket_server_side_encryption_configuration" "quotes" {
+  bucket = aws_s3_bucket.quotes_generator.id 
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.quotes-generator-terraform-bucket-key.arn
+      sse_algorithm     = "aws:kms"
     }
   }
 }
