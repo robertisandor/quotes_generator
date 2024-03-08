@@ -130,7 +130,7 @@ resource "aws_route_table" "quotes_route_table" {
 
   # since this is exactly the route AWS will create, the route will be adopted
   route {
-    cidr_block = "10.1.0.0/16"
+    cidr_block = "172.31.0.0/16"
     gateway_id = "local"
   }
 }
