@@ -131,13 +131,8 @@ resource "aws_route_table" "quotes_route_table" {
   # since this is exactly the route AWS will create, the route will be adopted
   route {
     cidr_block = "172.31.0.0/16"
-    gateway_id = "local"
+    network_interface_id = aws_network_interface.quotes_network_interface.id
   }
-}
-
-resource "aws_route_table_association" "quotes_1" {
-  subnet_id      = aws_subnet.quotes_1.id
-  route_table_id = aws_route_table.quotes_route_table.id
 }
 
 resource "aws_route_table_association" "quotes_2" {
@@ -148,6 +143,17 @@ resource "aws_route_table_association" "quotes_2" {
 resource "aws_route_table_association" "quotes_3" {
   subnet_id      = aws_subnet.quotes_3.id
   route_table_id = aws_route_table.quotes_route_table.id
+}
+
+resource "aws_network_interface" "quotes_network_interface" {
+  subnet_id       = aws_subnet.quotes_2.id
+  private_ips     = ["172.31.16.255"]
+  security_groups = [aws_security_group.default.id]
+
+  attachment {
+    instance     = aws_instance.web.id
+    device_index = 1
+  }
 }
 
 resource "aws_subnet" "quotes_1" {
