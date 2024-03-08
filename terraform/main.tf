@@ -260,7 +260,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
 }
 
 resource "aws_security_group" "default" {
-  name        = "default"
+  name        = "default_sg"
   vpc_id      = aws_vpc.quotes_main.id
   description = "default VPC security group"
 }
