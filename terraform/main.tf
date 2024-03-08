@@ -136,9 +136,10 @@ resource "aws_subnet" "quotes_1" {
 }
 
 resource "aws_subnet" "quotes_2" {
-  cidr_block        = "172.31.16.0/20"
-  vpc_id            = aws_vpc.quotes_main.id
-  availability_zone = "us-east-2b"
+  cidr_block              = "172.31.16.0/20"
+  vpc_id                  = aws_vpc.quotes_main.id
+  availability_zone       = "us-east-2b"
+  map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "quotes_3" {
@@ -374,7 +375,7 @@ resource "aws_instance" "web" {
     instance_type           = "t2.micro"
     key_name                = aws_key_pair.apiuser.key_name
     vpc_security_group_ids  = [aws_security_group.ec2_rds_1.id, aws_security_group.default.id]
-    subnet_id               = aws_subnet.quotes_1.id
+    subnet_id               = aws_subnet.quotes_2.id
 
     user_data = <<-EOL
     #!/bin/bash -xe
