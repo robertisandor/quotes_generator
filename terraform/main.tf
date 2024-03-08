@@ -386,7 +386,7 @@ resource "aws_instance" "web" {
     ami                     = data.aws_ami.ubuntu.id
     instance_type           = "t2.micro"
     key_name                = aws_key_pair.apiuser.key_name
-    vpc_security_group_ids  = [aws_security_group.ec2_rds_1.id, aws_security_group.default.id]
+    vpc_security_group_ids  = [aws_security_group.ec2_rds_1.id, aws_security_group.primary.id]
     subnet_id               = aws_subnet.quotes_2.id
 
     user_data = <<-EOL
