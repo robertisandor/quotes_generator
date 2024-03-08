@@ -94,7 +94,7 @@ resource "aws_db_instance" "quotes_generator" {
   publicly_accessible    = false
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.rds_ec2_1.id] 
-  db_subnet_group_name   = aws_subnet.quotes_1.name
+  db_subnet_group_name   = aws_db_subnet_group.quotes_subnet_group.name
 }
 
 resource "aws_db_parameter_group" "quotes_generator" {
@@ -142,6 +142,11 @@ resource "aws_subnet" "quotes_2" {
 resource "aws_subnet" "quotes_3" {
   cidr_block = "172.31.32.0/20"
   vpc_id     = aws_vpc.quotes_main.id
+}
+
+resource "aws_db_subnet_group" "quotes_subnet_group" {
+  name = "quotes_subnet_group"
+  subnet_ids = [aws_subnet.quotes_1.id, aws_subnet.quotes_2.id, aws_subnet.quotes_2.id]
 }
 
 resource "aws_vpc_dhcp_options" "quotes_dns_resolver" {
