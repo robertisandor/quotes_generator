@@ -94,6 +94,7 @@ resource "aws_db_instance" "quotes_generator" {
   publicly_accessible    = false
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.rds_ec2_1.id] 
+  db_subnet_group_name   = aws_subnet.quotes_1
 }
 
 resource "aws_db_parameter_group" "quotes_generator" {
@@ -361,10 +362,10 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_instance" "web" {
-    ami             = data.aws_ami.ubuntu.id
-    instance_type   = "t2.micro"
-    key_name        = aws_key_pair.apiuser.key_name
-    security_groups = [aws_security_group.ec2_rds_1.name, aws_security_group.default.name]
+    ami                     = data.aws_ami.ubuntu.id
+    instance_type           = "t2.micro"
+    key_name                = aws_key_pair.apiuser.key_name
+    vpc_security_groups_ids = [aws_security_group.ec2_rds_1.id, aws_security_group.default.id]
 
     user_data = <<-EOL
     #!/bin/bash -xe
