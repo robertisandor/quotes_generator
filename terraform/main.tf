@@ -260,12 +260,38 @@ resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
 }
 
 resource "aws_security_group" "default" {
+  name        = "default"
+  vpc_id      = aws_vpc.quotes_main.id
+  description = "default VPC security group"
+}
+
+resource "aws_security_group_rule" "allow_all_traffic_ingress" {
+  security_group_id = aws_security_group.default.id
+  description       = "Rule to allow all ingress traffic"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 0
+  protocol          = -1
+  to_port           = 0
+  type              = "ingress"
+}
+
+resource "aws_security_group_rule" "allow_all_traffic_egress" {
+  security_group_id = aws_security_group.default.id
+  description       = "Rule to allow all egress traffic"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 0
+  protocol          = -1
+  to_port           = 0
+  type              = "egress"
+}
+
+resource "aws_security_group" "primary" {
   name        = "primary"
   vpc_id      = aws_vpc.quotes_main.id
 }
 
 resource "aws_security_group_rule" "allow_ssh_access" {
-  security_group_id = aws_security_group.default.id
+  security_group_id = aws_security_group.primary.id
   description       = "Rule to allow SSH connections from internet to reach EC2"
   cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 22
