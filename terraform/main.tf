@@ -82,17 +82,18 @@ resource "aws_dynamodb_table" "terraform-state" {
 }
 
 resource "aws_db_instance" "quotes_generator" {
-  identifier           = "quotes-generator"
-  instance_class       = "db.t3.micro"
-  allocated_storage    = 5
-  engine               = "postgres"
-  engine_version       = "15.5"
-  db_name              = "quotes_db"
-  username             = "postgres"
-  password             = var.db_password
-  parameter_group_name = aws_db_parameter_group.quotes_generator.name
-  publicly_accessible  = false
-  skip_final_snapshot  = true
+  identifier             = "quotes-generator"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 5
+  engine                 = "postgres"
+  engine_version         = "15.5"
+  db_name                = "quotes_db"
+  username               = "postgres"
+  password               = var.db_password
+  parameter_group_name   = aws_db_parameter_group.quotes_generator.name
+  publicly_accessible    = false
+  skip_final_snapshot    = true
+  vpc_security_group_ids = [aws_security_group.rds_ec2_1.id] 
 }
 
 resource "aws_db_parameter_group" "quotes_generator" {
@@ -360,9 +361,10 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_instance" "web" {
-    ami           = data.aws_ami.ubuntu.id
-    instance_type = "t2.micro"
-    key_name      = aws_key_pair.apiuser.key_name
+    ami             = data.aws_ami.ubuntu.id
+    instance_type   = "t2.micro"
+    key_name        = aws_key_pair.apiuser.key_name
+    security_groups = [aws_security_group.ec2_rds_1.name, aws_security_group.default.name]
 
     user_data = <<-EOL
     #!/bin/bash -xe
