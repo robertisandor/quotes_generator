@@ -180,7 +180,7 @@ resource "aws_network_acl" "main" {
 
   ingress {
     protocol   = "-1"
-    rule_no    = 1
+    rule_no    = 100
     action     = "deny"
     cidr_block = "0.0.0.0/0"    
     from_port  = 0
@@ -189,7 +189,7 @@ resource "aws_network_acl" "main" {
 
   ingress {
     protocol   = "-1"
-    rule_no    = 100
+    rule_no    = 1
     action     = "allow"
     cidr_block = "0.0.0.0/0"
     from_port  = 0
@@ -198,7 +198,7 @@ resource "aws_network_acl" "main" {
 
   egress {
     protocol   = "-1"
-    rule_no    = 1
+    rule_no    = 100
     action     = "deny"
     cidr_block = "0.0.0.0/0"    
     from_port  = 0
@@ -207,7 +207,7 @@ resource "aws_network_acl" "main" {
 
   egress {
     protocol   = "-1"
-    rule_no    = 100
+    rule_no    = 1
     action     = "allow"
     cidr_block = "0.0.0.0/0"
     from_port  = 0
