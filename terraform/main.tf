@@ -129,16 +129,6 @@ resource "aws_route_table" "quotes_route_table" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.quotes_gateway.id
   }
-
-  route {
-    cidr_block           = "172.31.16.0/20"
-    network_interface_id = aws_network_interface.ec2_network_interface.id
-  }
-
-  route {
-    cidr_block           = "172.31.0.0/20"
-    network_interface_id = aws_network_interface.rds_network_interface.id
-  }
 }
 
 resource "aws_route_table_association" "quotes_2" {
@@ -258,14 +248,22 @@ resource "aws_security_group" "primary" {
   vpc_id      = aws_vpc.quotes_main.id
 }
 
-resource "aws_security_group_rule" "allow_ssh_access" {
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_access" {
   security_group_id = aws_security_group.primary.id
   description       = "Rule to allow SSH connections from internet to reach EC2"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_ipv4         = "0.0.0.0/0"
   from_port         = 22
-  protocol          = "tcp"
+  ip_protocol       = "tcp"
   to_port           = 22
-  type              = "ingress"
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_ssh_access" {
+  security_group_id = aws_security_group.primary.id
+  description       = "Rule to allow SSH connections from internet to reach EC2"
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 0
+  ip_protocol       = "-1"
+  to_port           = 0
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_internet_access" {
