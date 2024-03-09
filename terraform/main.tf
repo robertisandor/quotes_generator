@@ -253,7 +253,7 @@ resource "aws_security_group_rule" "allow_ssh_access" {
   description       = "Rule to allow SSH connections from internet to reach EC2"
   cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 22
-  ip_protocol       = "tcp"
+  protocol          = "tcp"
   to_port           = 22
   type              = "ingress"
 }
