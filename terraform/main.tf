@@ -268,6 +268,26 @@ resource "aws_security_group_rule" "allow_ssh_egress" {
   type              = "egress"
 }
 
+resource "aws_security_group_rule" "allow_http_egress" {
+  security_group_id = aws_security_group.primary.id
+  description       = "Rule to allow HTTP connections from EC2 to reach internet"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 80
+  protocol          = "tcp"
+  to_port           = 80
+  type              = "egress"
+}
+
+resource "aws_security_group_rule" "allow_https_egress" {
+  security_group_id = aws_security_group.primary.id
+  description       = "Rule to allow HTTP connections from EC2 to reach internet"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 443
+  protocol          = "tcp"
+  to_port           = 443
+  type              = "egress"
+}
+
 resource "aws_vpc_security_group_ingress_rule" "allow_internet_access" {
   security_group_id = aws_security_group.primary.id
   description       = "Rule to allow connections from internet to reach EC2"
