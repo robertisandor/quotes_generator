@@ -258,7 +258,7 @@ resource "aws_security_group_rule" "allow_ssh_access" {
   type              = "ingress"
 }
 
-resource "aws_security_group_rule" "allow_ssh_access" {
+resource "aws_security_group_rule" "allow_ssh_egress" {
   security_group_id = aws_security_group.primary.id
   description       = "Rule to allow SSH connections from EC2 to reach internet"
   cidr_blocks       = ["0.0.0.0/0"]
