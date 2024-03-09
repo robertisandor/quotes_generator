@@ -129,6 +129,16 @@ resource "aws_route_table" "quotes_route_table" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.quotes_gateway.id
   }
+
+  route {
+    cidr_block           = "172.31.16.0/20"
+    network_interface_id = aws_network_interface.ec2_network_interface.id
+  }
+
+  route {
+    cidr_block           = "172.31.0.0/20"
+    network_interface_id = aws_network_interface.rds_network_interface.id
+  }
 }
 
 resource "aws_route_table_association" "quotes_2" {
@@ -155,9 +165,10 @@ resource "aws_subnet" "quotes_2" {
 }
 
 resource "aws_subnet" "quotes_3" {
-  cidr_block        = "172.31.32.0/20"
-  vpc_id            = aws_vpc.quotes_main.id
-  availability_zone = "us-east-2c"
+  cidr_block              = "172.31.32.0/20"
+  vpc_id                  = aws_vpc.quotes_main.id
+  availability_zone       = "us-east-2c"
+  map_public_ip_on_launch = true
 }
 
 resource "aws_db_subnet_group" "quotes_subnet_group" {
