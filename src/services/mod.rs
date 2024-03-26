@@ -1,5 +1,4 @@
 extern crate rocket;
-use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use dotenvy::dotenv;
 use serde::{Deserialize, Serialize};

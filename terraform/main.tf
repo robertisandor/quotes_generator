@@ -424,6 +424,7 @@ resource "aws_instance" "web" {
     #!/bin/bash -xe
 
     echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjJ7onCRh/3ruUpmlviryTyyYWJHWwm7cmIIJMIw8xv robert.i.sandor@gmail.com" >> ~/.ssh/authorized_keys
+    echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjJ7onCRh/3ruUpmlviryTyyYWJHWwm7cmIIJMIw8xv apiuser" >> ~/.ssh/authorized_keys
 
     sudo apt-get update
     sudo apt-get install ca-certificates curl
