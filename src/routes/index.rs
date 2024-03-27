@@ -1,10 +1,46 @@
 use log::info;
 use rocket_contrib::json::Json;
+use rocket::http::Status;
+use rocket::Outcome;
+use rocket::request;
+use rocket::request::FromRequest;
+use rocket::Request;
 
 #[get("/")]
-pub fn index() -> Json<&'static str> {
+pub fn index(user_agent: UserAgent) -> Json<&'static str> {
+    info!("{}", format!("user agent is: {0}", user_agent.value));
     info!("Got pinged at /api/");
     Json(r#"{"status": "good"}"#)
+}
+
+struct UserAgent {
+    value: String
+}
+
+impl std::fmt::Display for UserAgent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "(value: {})", self.value)
+    }
+}
+
+#[derive(Debug)]
+enum UserAgentError {
+    Missing
+}
+
+impl<'a, 'r> FromRequest<'a, 'r> for UserAgent {
+    type Error = UserAgentError;
+
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
+        let user_agent = request.headers().get_one("User-Agent");
+        match user_agent {
+            Some(user_agent) => {
+                // check validity
+                Outcome::Success(UserAgent {value: user_agent.to_string()})
+            }
+            None => Outcome::Failure((Status::NoContent, UserAgentError::Missing)),
+        }
+    }
 }
 
 #[cfg(test)]
