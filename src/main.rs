@@ -1,26 +1,34 @@
 #![feature(decl_macro)]
-#[macro_use] extern crate rocket;
 
 use log::LevelFilter;
+
+use axum::{
+    routing::{get, post},
+    Router,
+};
+use tokio::net::TcpListener;
 
 mod models;
 mod services;
 mod schema;
 mod routes;
 
-use crate::routes::index::static_rocket_route_info_for_index;
-use crate::routes::quote::static_rocket_route_info_for_create_quote;
-use crate::routes::all::static_rocket_route_info_for_list;
-use crate::routes::not_found::static_rocket_catch_info_for_not_found;
+use crate::routes::index::index;
+use crate::routes::all::list;
+use crate::routes::quote::create_quote;
+use crate::routes::not_found::not_found;
 
-pub fn rocket_builder() -> rocket::Rocket {
-    rocket::ignite()
-        .register(catchers![not_found])
-        .mount("/api", routes![index, create_quote, list])
-}
-
-fn main() {
+#[tokio::main]
+async fn main() {
     let _ = simple_logging::log_to_file("app.log", LevelFilter::Info);
 
-    rocket_builder().launch();
+    let app = Router::new()
+        .route("/", get(index))
+        .route("/all", get(list))
+        .route("/quote", post(create_quote))
+        .fallback(not_found);
+
+    // run our app with hyper, listening globally on port 3000
+    let listener = TcpListener::bind("0.0.0.0:8000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }

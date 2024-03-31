@@ -1,4 +1,3 @@
-extern crate rocket;
 use diesel::prelude::*;
 use dotenvy::dotenv;
 use serde::{Deserialize, Serialize};

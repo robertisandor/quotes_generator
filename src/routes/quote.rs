@@ -1,14 +1,13 @@
+use axum::Json;
 use diesel::RunQueryDsl;
 use diesel::sql_query;
 use log::info;
-use rocket_contrib::json::Json;
 use serde_json::json;
 
 use crate::services::NewQuote;
 use crate::services::establish_connection_pg;
 
-#[post("/quote", format = "json", data = "<quote>")]
-pub fn create_quote(quote: Json<NewQuote>) -> Json<String> {
+pub async fn create_quote(quote: Json<NewQuote>) -> Json<String> {
     info!("Creating db connection for /api/quote");
     let connection = &mut establish_connection_pg();
     info!("Created db connection for /api/quote");
