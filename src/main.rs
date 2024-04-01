@@ -22,13 +22,15 @@ use crate::routes::not_found::not_found;
 async fn main() {
     let _ = simple_logging::log_to_file("app.log", LevelFilter::Info);
 
-    let app = Router::new()
+    // run our app with hyper, listening globally on port 3000
+    let listener = TcpListener::bind("0.0.0.0:8000").await.unwrap();
+    axum::serve(listener, app()).await.unwrap();
+}
+
+fn app() -> Router {
+    Router::new()
         .route("/", get(index))
         .route("/all", get(list))
         .route("/quote", post(create_quote))
-        .fallback(not_found);
-
-    // run our app with hyper, listening globally on port 3000
-    let listener = TcpListener::bind("0.0.0.0:8000").await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+        .fallback(not_found)
 }

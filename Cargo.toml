@@ -7,10 +7,14 @@ edition = "2021"
 
 [dependencies]
 axum = {version = "0.7.5"}
-tokio = { version = "1.36.0", features = ["full"] }
 diesel = {version = "2.1.0", features = ["postgres", "r2d2"]}
 dotenvy = "0.15"
+http-body-util = "0.1.0"
+log = "0.4.20"
 serde = { version = "1.0.152", features = ["derive"] }
 serde_json = "1.0.105"
-log = "0.4.20"
 simple-logging = "2.0.2"
+tokio = { version = "1.36.0", features = ["full"] }
+
+[dev-dependencies]
+tower = { version = "0.4", features = ["util"] }

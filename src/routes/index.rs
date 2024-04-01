@@ -38,17 +38,28 @@ pub async fn index() -> Json<&'static str> {
 //     }
 // }
 
-// #[cfg(test)]
-// mod tests {
-//     use rocket::local::Client;
-//     use rocket::http::Status;
-//     use crate::rocket_builder;
+#[cfg(test)]
+mod tests {
+    use crate::app;
+    use axum::{
+        body::Body,
+        http::{Request, StatusCode},
+    };
+    use http_body_util::BodyExt; 
+    use tower::ServiceExt; 
 
-//     #[test]
-//     fn test_get_index() {
-//         let client = Client::new(rocket_builder()).expect("Valid Rocket instance");
-//         let mut response = client.get("/api/").dispatch();
-//         assert_eq!(response.status(), Status::Ok);
-//         assert_eq!(response.body_string(), Some(r#""{\"status\": \"good\"}""#.into()));
-//     }
-// }
+    #[tokio::test]
+    async fn test_get_index() {
+        let app = app();
+
+        let response = app
+            .oneshot(Request::builder().uri("/").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), StatusCode::OK);
+
+        let body = response.into_body().collect().await.unwrap().to_bytes();
+        assert_eq!(&body[..], b"\"{\\\"status\\\": \\\"good\\\"}\"");
+    }
+}
