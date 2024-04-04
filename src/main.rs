@@ -1,12 +1,12 @@
 #![feature(decl_macro)]
 
-use log::LevelFilter;
-
 use axum::{
     routing::{get, post},
     Router,
 };
+use std::{fs::File, sync::Arc};
 use tokio::net::TcpListener;
+use tracing_subscriber::{Registry, prelude::*};
 
 mod models;
 mod services;
@@ -20,7 +20,13 @@ use crate::routes::not_found::not_found;
 
 #[tokio::main]
 async fn main() {
-    let _ = simple_logging::log_to_file("app.log", LevelFilter::Info);
+    let file = File::create("app.log");
+    let file = match file  {Ok(file) => file,Err(error) => panic!("Error: {:?}",error),};
+    let app_log = tracing_subscriber::fmt::layer().json()
+        .with_writer(Arc::new(file));
+    Registry::default()
+        .with(app_log)
+        .init();
 
     // run our app with hyper, listening globally on port 3000
     let listener = TcpListener::bind("0.0.0.0:8000").await.unwrap();

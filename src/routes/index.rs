@@ -1,42 +1,22 @@
-use log::info;
-use axum::Json;
+use tracing::{event, Level};
+use axum::{
+    Json,
+    http::header::HeaderMap,
+};
 
-// pub async fn index(user_agent: UserAgent) -> Json<&'static str> {
-pub async fn index() -> Json<&'static str> {
-    // info!("{}", format!("user agent is: {0}", user_agent.value));
-    info!("Got pinged at /api/");
+pub async fn index(headers: HeaderMap) -> Json<&'static str> {
+    event!(Level::INFO, host = headers.get("host").unwrap().to_str().unwrap() 
+                      , user_agent = headers.get("user-agent").unwrap().to_str().unwrap()
+                      , accept = headers.get("accept").unwrap().to_str().unwrap()
+                      , accept_language = headers.get("accept-language").unwrap().to_str().unwrap()
+                      , accept_encoding = headers.get("accept-encoding").unwrap().to_str().unwrap()
+                      , upgrade_insecure_requests = headers.get("upgrade-insecure-requests").unwrap().to_str().unwrap()
+                      , sec_fetch_dest = headers.get("sec-fetch-dest").unwrap().to_str().unwrap()
+                      , sec_fetch_mode = headers.get("sec-fetch-mode").unwrap().to_str().unwrap()
+                      , sec_fetch_site = headers.get("sec-fetch-site").unwrap().to_str().unwrap()
+                      , sec_fetch_user = headers.get("sec-fetch-user").unwrap().to_str().unwrap());
     Json(r#"{"status": "good"}"#)
 }
-
-// struct UserAgent {
-//     value: String
-// }
-
-// impl std::fmt::Display for UserAgent {
-//     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-//         write!(f, "(value: {})", self.value)
-//     }
-// }
-
-// #[derive(Debug)]
-// enum UserAgentError {
-//     Missing
-// }
-
-// impl<'a, 'r> FromRequest<'a, 'r> for UserAgent {
-//     type Error = UserAgentError;
-
-//     fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
-//         let user_agent = request.headers().get_one("User-Agent");
-//         match user_agent {
-//             Some(user_agent) => {
-//                 // check validity
-//                 Outcome::Success(UserAgent {value: user_agent.to_string()})
-//             }
-//             None => Outcome::Failure((Status::NoContent, UserAgentError::Missing)),
-//         }
-//     }
-// }
 
 #[cfg(test)]
 mod tests {
