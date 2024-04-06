@@ -1,5 +1,3 @@
-#![feature(decl_macro)]
-
 use axum::{
     routing::{get, post},
     Router,
