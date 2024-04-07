@@ -297,7 +297,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_internet_access" {
   to_port           = 80
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_internet_access" {
+resource "aws_vpc_security_group_ingress_rule" "allow_internet_access_port_8000" {
   security_group_id = aws_security_group.primary.id
   description       = "Rule to allow connections from internet to reach EC2"
   cidr_ipv4         = "98.45.195.5/32"
