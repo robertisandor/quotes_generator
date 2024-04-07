@@ -35,7 +35,7 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 ENV ROCKET_ADDRESS=0.0.0.0
-EXPOSE 8000
+EXPOSE 80
 COPY --from=build_1 /quotes_generator/target/release/quotes_generator /usr/local/bin/quotes-generator
 WORKDIR /usr/local/bin
 CMD ["quotes-generator"]
