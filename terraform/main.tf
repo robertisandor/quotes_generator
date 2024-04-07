@@ -278,6 +278,16 @@ resource "aws_security_group_rule" "allow_http_egress" {
   type              = "egress"
 }
 
+resource "aws_security_group_rule" "allow_http_egress_port_8000" {
+  security_group_id = aws_security_group.primary.id
+  description       = "Rule to allow HTTP connections from EC2 to reach internet"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 8000
+  protocol          = "tcp"
+  to_port           = 8000
+  type              = "egress"
+}
+
 resource "aws_security_group_rule" "allow_https_egress" {
   security_group_id = aws_security_group.primary.id
   description       = "Rule to allow HTTP connections from EC2 to reach internet"
