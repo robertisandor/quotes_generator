@@ -197,5 +197,5 @@ jobs:
             CI=true sudo docker image prune -a -f
             CI=true sudo docker pull risandor/quotes_generator:0.1.0
             CI=true sudo docker rm quotes-generator || true
-            CI=true sudo docker run --name=quotes-generator --env-file .env -d -p 80:8000 risandor/quotes_generator:0.1.0
+            CI=true sudo docker run --name=quotes-generator --env-file .env -d -p 8000:8000 risandor/quotes_generator:0.1.0
             
