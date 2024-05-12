@@ -34,7 +34,6 @@ RUN apt-get update && \
     libpq-dev=14.11-0ubuntu0.22.04.1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-ENV ROCKET_ADDRESS=0.0.0.0
 EXPOSE 80
 COPY --from=build_1 /quotes_generator/target/release/quotes_generator /usr/local/bin/quotes-generator
 WORKDIR /usr/local/bin
