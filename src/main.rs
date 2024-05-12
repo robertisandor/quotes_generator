@@ -27,7 +27,7 @@ async fn main() {
         .init();
 
     // run our app with hyper, listening globally on port 80
-    let listener = TcpListener::bind("0.0.0.0:80").await.unwrap();
+    let listener = TcpListener::bind("0.0.0.0:8000").await.unwrap();
     axum::serve(listener, app()).await.unwrap();
 }
 
