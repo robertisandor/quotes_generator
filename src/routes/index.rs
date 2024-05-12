@@ -15,6 +15,7 @@ pub async fn index(headers: HeaderMap) -> Json<&'static str> {
     //                   , sec_fetch_mode = headers.get("sec-fetch-mode").unwrap().to_str().unwrap()
     //                   , sec_fetch_site = headers.get("sec-fetch-site").unwrap().to_str().unwrap()
     //                   , sec_fetch_user = headers.get("sec-fetch-user").unwrap().to_str().unwrap());
+    event!(Level::INFO, host = headers.get("host").unwrap().to_str().unwrap());
     Json(r#"{"status": "good"}"#)
 }
 
