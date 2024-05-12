@@ -20,9 +20,9 @@ pub async fn index(headers: HeaderMap) -> Json<&'static str> {
                       , accept = headers.get("accept").unwrap().to_str().unwrap()
                       , accept_language = headers.get("accept-language").unwrap().to_str().unwrap()
                       , accept_encoding = headers.get("accept-encoding").unwrap().to_str().unwrap()
-                      , upgrade_insecure_requests = headers.get("upgrade-insecure-requests").unwrap().to_str().unwrap()
-                      , sec_fetch_dest = headers.get("sec-fetch-dest").unwrap().to_str().unwrap()
-                      , sec_fetch_mode = headers.get("sec-fetch-mode").unwrap().to_str().unwrap());
+                      , upgrade_insecure_requests = headers.get("upgrade-insecure-requests").unwrap().to_str().unwrap());
+                    //   , sec_fetch_dest = headers.get("sec-fetch-dest").unwrap().to_str().unwrap()
+                    //   , sec_fetch_mode = headers.get("sec-fetch-mode").unwrap().to_str().unwrap());
     Json(r#"{"status": "good"}"#)
 }
 
