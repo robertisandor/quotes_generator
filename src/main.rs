@@ -18,12 +18,9 @@ use crate::routes::not_found::not_found;
 
 #[tokio::main]
 async fn main() {
-    let file = File::create("app.log");
-    let file = match file  {Ok(file) => file,Err(error) => panic!("Error: {:?}",error),};
-    let app_log = tracing_subscriber::fmt::layer().json()
-        .with_writer(Arc::new(file));
+    let std_log = tracing_subscriber::fmt::layer().json();
     Registry::default()
-        .with(app_log)
+        .with(std_log)
         .init();
 
     // run our app with hyper, listening globally on port 80
