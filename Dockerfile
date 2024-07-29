@@ -8,9 +8,9 @@ RUN apt-get update \
     build-essential=12.9ubuntu3 \
     curl=7.81.0-1ubuntu1.16 \
     pkg-config=0.29.2-1ubuntu3 \
-    libssl-dev=3.0.2-0ubuntu1.15 \
+    libssl-dev=3.0.2-0ubuntu1.16 \
     postgresql-14 \
-    libpq-dev=14.11-0ubuntu0.22.04.1 \
+    libpq-dev=14.12-0ubuntu0.22.04.1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* 
 
