@@ -71,7 +71,7 @@ resource "aws_kms_alias" "key-alias" {
   target_key_id = aws_kms_key.quotes-generator-terraform-bucket-key.key_id
 }
 
-/*
+
 resource "aws_dynamodb_table" "terraform-state" {
   name           = "terraform-state"
   read_capacity  = 20
@@ -84,6 +84,7 @@ resource "aws_dynamodb_table" "terraform-state" {
   }
 }
 
+/*
 resource "aws_db_instance" "quotes_generator" {
   identifier             = "quotes-generator"
   instance_class         = "db.t3.micro"
@@ -222,6 +223,7 @@ resource "aws_security_group" "rds_ec2_1" {
   vpc_id      = aws_vpc.quotes_main.id
 }
 
+/*
 resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv6" {
   security_group_id = aws_security_group.rds_ec2_1.id
   description       = "Rule to allow connections from EC2 instances with sg attached"
@@ -230,12 +232,14 @@ resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv6" {
   ip_protocol       = "tcp"
   to_port           = 5432
 }
+*/
 
 resource "aws_security_group" "ec2_rds_1" {
   name        = "ec2_rds_1"
   vpc_id      = aws_vpc.quotes_main.id
 }
 
+/*
 resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
   security_group_id = aws_security_group.ec2_rds_1.id
   description       = "Rule to allow connections from EC2 instances with sg attached"
@@ -244,12 +248,14 @@ resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
   ip_protocol       = "tcp"
   to_port           = 5432
 }
+*/
 
 resource "aws_security_group" "primary" {
   name        = "primary"
   vpc_id      = aws_vpc.quotes_main.id
 }
 
+/*
 resource "aws_security_group_rule" "allow_ssh_access" {
   security_group_id = aws_security_group.primary.id
   description       = "Rule to allow SSH connections from internet to reach EC2"
@@ -317,6 +323,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_internet_access_port_8000"
   ip_protocol       = "tcp"
   to_port           = 8000
 }
+*/
 
 resource "aws_network_interface" "rds_network_interface" {
   subnet_id       = aws_subnet.quotes_1.id
