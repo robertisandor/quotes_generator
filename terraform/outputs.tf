@@ -4,6 +4,7 @@ output "ec2_hostname" {
   sensitive   = true
 }
 
+/*
 output "rds_hostname" {
   description = "RDS instance hostname"
   value       = aws_db_instance.quotes_generator.address
@@ -21,3 +22,4 @@ output "rds_password" {
   value       = aws_db_instance.quotes_generator.password  
   sensitive   = true
 }
+*/
