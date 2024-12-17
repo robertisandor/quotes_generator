@@ -219,12 +219,12 @@ resource "aws_network_acl" "main" {
   }
 }
 
+/*
 resource "aws_security_group" "rds_ec2_1" {
   name        = "rds_ec2_1"
   vpc_id      = aws_vpc.quotes_main.id
 }
 
-/*
 resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv6" {
   security_group_id = aws_security_group.rds_ec2_1.id
   description       = "Rule to allow connections from EC2 instances with sg attached"
@@ -233,12 +233,12 @@ resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv6" {
   ip_protocol       = "tcp"
   to_port           = 5432
 }
-*/
 
 resource "aws_security_group" "ec2_rds_1" {
   name        = "ec2_rds_1"
   vpc_id      = aws_vpc.quotes_main.id
 }
+*/
 
 /*
 resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
@@ -249,12 +249,12 @@ resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
   ip_protocol       = "tcp"
   to_port           = 5432
 }
-*/
 
 resource "aws_security_group" "primary" {
   name        = "primary"
   vpc_id      = aws_vpc.quotes_main.id
 }
+*/
 
 /*
 resource "aws_security_group_rule" "allow_ssh_access" {
