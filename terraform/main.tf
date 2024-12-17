@@ -71,6 +71,7 @@ resource "aws_kms_alias" "key-alias" {
   target_key_id = aws_kms_key.quotes-generator-terraform-bucket-key.key_id
 }
 
+/*
 resource "aws_dynamodb_table" "terraform-state" {
   name           = "terraform-state"
   read_capacity  = 20
@@ -113,6 +114,7 @@ resource "aws_db_parameter_group" "quotes_generator" {
     value = "0"
   }
 }
+*/
 
 resource "aws_vpc" "quotes_main" {
   cidr_block = "172.31.0.0/16"
@@ -328,6 +330,7 @@ resource "aws_network_interface" "ec2_network_interface" {
   security_groups = [aws_security_group.ec2_rds_1.id]
 }
 
+/*
 resource "aws_iam_group" "admin_group_test" {
   name = "admin_group_test"
   path = "/admin_group_test/"
@@ -410,6 +413,7 @@ resource "aws_iam_group_policy" "admin_iam_user_change_password_policy" {
         ]
     })
 }
+*/
 
 resource "aws_key_pair" "apiuser" {
     key_name   = "apiuser"
