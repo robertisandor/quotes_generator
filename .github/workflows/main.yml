@@ -60,7 +60,7 @@ jobs:
       # Generates an execution plan for Terraform
       - name: Terraform Plan
         run: >-
-          terraform plan;
+          terraform plan -lock=false;
         working-directory: ${{ env.CONFIG_DIRECTORY }}
 
       # On push to master, build or change infrastructure according to Terraform configuration files
