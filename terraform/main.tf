@@ -71,7 +71,6 @@ resource "aws_kms_alias" "key-alias" {
   target_key_id = aws_kms_key.quotes-generator-terraform-bucket-key.key_id
 }
 
-/*
 resource "aws_dynamodb_table" "terraform-state" {
   name           = "terraform-state"
   read_capacity  = 20
@@ -83,7 +82,6 @@ resource "aws_dynamodb_table" "terraform-state" {
     type = "S"
   }
 }
-*/
 
 /*
 resource "aws_db_instance" "quotes_generator" {
