@@ -438,7 +438,6 @@ data "aws_ami" "ubuntu" {
     owners = ["099720109477"] # Canonical
 }
 
-/*
 resource "aws_instance" "web" {
     ami                     = data.aws_ami.ubuntu.id
     instance_type           = "t2.micro"
@@ -473,4 +472,3 @@ resource "aws_instance" "web" {
         Name = "QuotesApiWeb"
     }
 }
-*/
