@@ -1,10 +1,10 @@
+/*
 output "ec2_hostname" {
   description = "EC2 instance public IP"
   value	      = aws_instance.web.public_ip
   sensitive   = true
 }
 
-/*
 output "rds_hostname" {
   description = "RDS instance hostname"
   value       = aws_db_instance.quotes_generator.address
