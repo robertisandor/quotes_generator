@@ -221,7 +221,6 @@ resource "aws_network_acl" "main" {
   }
 }
 
-/*
 resource "aws_security_group" "rds_ec2_1" {
   name        = "rds_ec2_1"
   vpc_id      = aws_vpc.quotes_main.id
@@ -240,9 +239,7 @@ resource "aws_security_group" "ec2_rds_1" {
   name        = "ec2_rds_1"
   vpc_id      = aws_vpc.quotes_main.id
 }
-*/
 
-/*
 resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
   security_group_id = aws_security_group.ec2_rds_1.id
   description       = "Rule to allow connections from EC2 instances with sg attached"
@@ -256,9 +253,7 @@ resource "aws_security_group" "primary" {
   name        = "primary"
   vpc_id      = aws_vpc.quotes_main.id
 }
-*/
 
-/*
 resource "aws_security_group_rule" "allow_ssh_access" {
   security_group_id = aws_security_group.primary.id
   description       = "Rule to allow SSH connections from internet to reach EC2"
@@ -338,9 +333,7 @@ resource "aws_network_interface" "ec2_network_interface" {
   private_ips     = ["172.31.19.101"]
   security_groups = [aws_security_group.ec2_rds_1.id]
 }
-*/
 
-/*
 resource "aws_iam_group" "admin_group_test" {
   name = "admin_group_test"
   path = "/admin_group_test/"
@@ -423,7 +416,6 @@ resource "aws_iam_group_policy" "admin_iam_user_change_password_policy" {
         ]
     })
 }
-*/
 
 resource "aws_key_pair" "apiuser" {
     key_name   = "apiuser"
