@@ -83,7 +83,6 @@ resource "aws_dynamodb_table" "terraform-state" {
   }
 }
 
-/*
 resource "aws_db_instance" "quotes_generator" {
   identifier             = "quotes-generator"
   instance_class         = "db.t3.micro"
@@ -114,7 +113,6 @@ resource "aws_db_parameter_group" "quotes_generator" {
     value = "0"
   }
 }
-*/
 
 resource "aws_vpc" "quotes_main" {
   cidr_block = "172.31.0.0/16"
@@ -163,12 +161,10 @@ resource "aws_subnet" "quotes_3" {
   map_public_ip_on_launch = true
 }
 
-/*
 resource "aws_db_subnet_group" "quotes_subnet_group" {
   name = "quotes_subnet_group"
   subnet_ids = [aws_subnet.quotes_1.id, aws_subnet.quotes_2.id, aws_subnet.quotes_3.id]
 }
-*/
 
 resource "aws_vpc_dhcp_options" "quotes_dns_resolver" {
   domain_name_servers  = ["AmazonProvidedDNS"]
