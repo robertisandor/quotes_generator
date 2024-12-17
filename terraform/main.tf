@@ -71,7 +71,7 @@ resource "aws_kms_alias" "key-alias" {
   target_key_id = aws_kms_key.quotes-generator-terraform-bucket-key.key_id
 }
 
-
+/*
 resource "aws_dynamodb_table" "terraform-state" {
   name           = "terraform-state"
   read_capacity  = 20
@@ -83,6 +83,7 @@ resource "aws_dynamodb_table" "terraform-state" {
     type = "S"
   }
 }
+*/
 
 /*
 resource "aws_db_instance" "quotes_generator" {
@@ -323,7 +324,6 @@ resource "aws_vpc_security_group_ingress_rule" "allow_internet_access_port_8000"
   ip_protocol       = "tcp"
   to_port           = 8000
 }
-*/
 
 resource "aws_network_interface" "rds_network_interface" {
   subnet_id       = aws_subnet.quotes_1.id
@@ -336,6 +336,7 @@ resource "aws_network_interface" "ec2_network_interface" {
   private_ips     = ["172.31.19.101"]
   security_groups = [aws_security_group.ec2_rds_1.id]
 }
+*/
 
 /*
 resource "aws_iam_group" "admin_group_test" {
