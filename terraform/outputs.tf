@@ -1,4 +1,3 @@
-/*
 output "ec2_hostname" {
   description = "EC2 instance public IP"
   value	      = aws_instance.web.public_ip
@@ -22,4 +21,3 @@ output "rds_password" {
   value       = aws_db_instance.quotes_generator.password  
   sensitive   = true
 }
-*/
