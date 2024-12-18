@@ -169,6 +169,13 @@ jobs:
           context: .
           push: true
           tags: risandor/quotes_generator:0.1.0
+
+      - name: Build and push frontend Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend/
+          push: true
+          tags: risandor/quotes_generator_frontend:0.1.0
   
   deploy_code:        
     name: "Deploy Code"
@@ -198,4 +205,5 @@ jobs:
             CI=true sudo docker pull risandor/quotes_generator:0.1.0
             CI=true sudo docker rm quotes-generator || true
             CI=true sudo docker run --name=quotes-generator --env-file .env -d -p 8000:8000 risandor/quotes_generator:0.1.0
+            CI=true sudo docker run --name=quotes-generator-frontend --env-file .env -d -p 3000:3000 risandor/quotes_generator_frontend:0.1.0
             
