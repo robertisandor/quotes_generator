@@ -6,7 +6,7 @@ use log::info;
 use crate::models::Quote;
 use crate::services::establish_connection_pg;
 
-pub async fn random() -> Json<Quote> {
+pub async fn random() -> Json<Vec<Quote>> {
     info!("Creating db connection for /random");
     let connection = &mut establish_connection_pg();
     info!("Created db connection for /random");
