@@ -33,7 +33,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libpq5=14.5-0ubuntu0.22.04.1 \
-    libpq-dev=14.12-0ubuntu0.22.04.1 \
     ca-certificates=20230311ubuntu0.22.04.1 \
     curl=7.81.0-1ubuntu1.16 \
     && apt-get clean \
