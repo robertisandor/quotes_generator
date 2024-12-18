@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const QuoteGenerator = () => {
-    const [quote, setQuote] = useState('');
-    const [author, setAuthor] = useState('');
+    const [text, setText] = useState('');
+    const [speaker, setSpeaker] = useState('');
     const [loading, setLoading] = useState(true);
 
     const fetchQuote = async () => {
@@ -13,8 +13,9 @@ const QuoteGenerator = () => {
         try {
             // Adding the endpoint for the EC2 instance on AWS (2024-12-17)
             const response = await axios.get('http://localhost:8000/random');
-            setQuote(response.data.content);
-            setAuthor(response.data.author);
+            console.log(response)
+            setText(response.data.text);
+            setSpeaker(response.data.speaker);
         } catch (error) {
             console.error('Error fetching quote:', error);
         } finally {
@@ -33,9 +34,9 @@ const QuoteGenerator = () => {
             ) : (
                 <div>
                     <blockquote>
-                        "{quote}"
+                        "{text}"
                     </blockquote>
-                    <p>- {author}</p>
+                    <p>- {speaker}</p>
                     <button onClick={fetchQuote} class="btn">
                         Get Another Quote
                     </button>
