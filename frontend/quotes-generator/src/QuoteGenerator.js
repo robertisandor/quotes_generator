@@ -12,7 +12,7 @@ const QuoteGenerator = () => {
         setLoading(true);
         try {
             // Adding the endpoint for the EC2 instance on AWS (2024-12-17)
-            const response = await axios.get('http://localhost:8000/random');
+            const response = await axios.get('http://3.140.238.209:8000/random');
             console.log(response)
             setText(response.data.text);
             setSpeaker(response.data.speaker);
