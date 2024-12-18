@@ -14,6 +14,7 @@ mod routes;
 use crate::routes::index::index;
 use crate::routes::all::list;
 use crate::routes::quote::create_quote;
+use crate::routes::random::random;
 use crate::routes::not_found::not_found;
 
 #[tokio::main]
