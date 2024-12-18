@@ -39,11 +39,7 @@ fn app() -> Router {
         .route("/random", get(random))
         .layer(SetResponseHeaderLayer::if_not_present(
             ACCESS_CONTROL_ALLOW_ORIGIN,
-            HeaderValue::from_static("http://3.140.238.209:8000/random"),
-        ))
-        .layer(SetResponseHeaderLayer::if_not_present(
-            ACCESS_CONTROL_ALLOW_ORIGIN,
-            HeaderValue::from_static("http://3.140.238.209:8000/all"),
+            HeaderValue::from_static("*"),
         ))
         .fallback(not_found)
 }
