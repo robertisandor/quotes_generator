@@ -14,8 +14,8 @@ const QuoteGenerator = () => {
             // Adding the endpoint for the EC2 instance on AWS (2024-12-17)
             const response = await axios.get('http://3.140.238.209:8000/random');
             console.log(response)
-            setText(response.data.text);
-            setSpeaker(response.data.speaker);
+            setText(response.data[0].text);
+            setSpeaker(response.data[0].speaker);
         } catch (error) {
             console.error('Error fetching quote:', error);
         } finally {
