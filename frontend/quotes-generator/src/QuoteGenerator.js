@@ -37,7 +37,7 @@ const QuoteGenerator = () => {
                         "{text}"
                     </blockquote>
                     <p>- {speaker}</p>
-                    <button onClick={fetchQuote} class="btn">
+                    <button onClick={fetchQuote} className="btn">
                         Get Another Quote
                     </button>
                 </div>
