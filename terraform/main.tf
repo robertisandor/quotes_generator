@@ -288,6 +288,16 @@ resource "aws_security_group_rule" "allow_http_egress_port_8000" {
   type              = "egress"
 }
 
+resource "aws_security_group_rule" "allow_http_egress_port_3000" {
+  security_group_id = aws_security_group.primary.id
+  description       = "Rule to allow HTTP connections from EC2 to reach internet"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 3000
+  protocol          = "tcp"
+  to_port           = 3000
+  type              = "egress"
+}
+
 resource "aws_security_group_rule" "allow_https_egress" {
   security_group_id = aws_security_group.primary.id
   description       = "Rule to allow HTTP connections from EC2 to reach internet"
@@ -318,6 +328,15 @@ resource "aws_vpc_security_group_ingress_rule" "allow_internet_access_port_8000"
   from_port         = 8000
   ip_protocol       = "tcp"
   to_port           = 8000
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_internet_access_port_3000" {
+  security_group_id = aws_security_group.primary.id
+  description       = "Rule to allow connections from internet to reach EC2"
+  cidr_ipv4         = "98.45.195.5/32"
+  from_port         = 3000
+  ip_protocol       = "tcp"
+  to_port           = 3000
 }
 
 resource "aws_network_interface" "rds_network_interface" {
