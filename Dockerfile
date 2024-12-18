@@ -11,7 +11,6 @@ RUN apt-get update \
     libssl-dev=3.0.2-0ubuntu1.16 \
     postgresql-14 \
     libpq5=14.5-0ubuntu0.22.04.1 \
-    libpq-dev=14.12-0ubuntu0.22.04.1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* 
 
