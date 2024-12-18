@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as build_1
+FROM ubuntu:22.04 AS build_1
 ARG DEBIAN_FRONTEND=noninteractive
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -10,6 +10,7 @@ RUN apt-get update \
     pkg-config=0.29.2-1ubuntu3 \
     libssl-dev=3.0.2-0ubuntu1.16 \
     postgresql-14 \
+    libpq5=14.5-0ubuntu0.22.04.1 \
     libpq-dev=14.12-0ubuntu0.22.04.1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* 
@@ -26,11 +27,12 @@ COPY ./src ./src
 RUN cargo build --release
 RUN rm src/*.rs
 
-FROM ubuntu:22.04 as build_2
+FROM ubuntu:22.04 AS build_2
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    libpq5=14.5-0ubuntu0.22.04.1 \
     libpq-dev=14.12-0ubuntu0.22.04.1 \
     ca-certificates=20230311ubuntu0.22.04.1 \
     curl=7.81.0-1ubuntu1.16 \
