@@ -2,8 +2,10 @@ use axum::{
     routing::{get, post},
     Router,
 };
+use axum::http::header::{HeaderValue, ACCESS_CONTROL_ALLOW_ORIGIN};
 use std::{fs::File, sync::Arc};
 use tokio::net::TcpListener;
+use tower_http::set_header::SetResponseHeaderLayer;
 use tracing_subscriber::{Registry, prelude::*};
 
 mod models;
@@ -35,5 +37,9 @@ fn app() -> Router {
         .route("/all", get(list))
         .route("/quote", post(create_quote))
         .route("/random", get(random))
+        .layer(SetResponseHeaderLayer::if_not_present(
+            ACCESS_CONTROL_ALLOW_ORIGIN,
+            HeaderValue::from_static("*"),
+        ))
         .fallback(not_found)
 }
