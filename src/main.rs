@@ -33,5 +33,6 @@ fn app() -> Router {
         .route("/", get(index))
         .route("/all", get(list))
         .route("/quote", post(create_quote))
+        .route("/random", get(random))
         .fallback(not_found)
 }

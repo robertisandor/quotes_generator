@@ -11,7 +11,8 @@ const QuoteGenerator = () => {
     const fetchQuote = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('https://api.quotable.io/random');
+            // Adding the endpoint for the EC2 instance on AWS (2024-12-17)
+            const response = await axios.get('http://3.140.238.209:8000/random');
             setQuote(response.data.content);
             setAuthor(response.data.author);
         } catch (error) {
