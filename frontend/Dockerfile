@@ -6,4 +6,5 @@ RUN npm install --force
 ADD ./quotes-generator/src /usr/src/app/src
 ADD ./quotes-generator/public /usr/src/app/public
 EXPOSE 3000
-CMD [ "npm", "run", "build" ]
+RUN npm run build 
+CMD [ "serve", "-s", "build" ]
