@@ -7,4 +7,4 @@ ADD ./quotes-generator/src /usr/src/app/src
 ADD ./quotes-generator/public /usr/src/app/public
 EXPOSE 3000
 RUN npm run build 
-CMD [ "serve", "-s", "build" ]
+CMD [ "npm", "run", "start" ]
