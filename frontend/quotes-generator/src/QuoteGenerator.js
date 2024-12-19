@@ -1,5 +1,3 @@
-// src/QuoteGenerator.js
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -13,7 +11,6 @@ const QuoteGenerator = () => {
         try {
             // Adding the endpoint for the EC2 instance on AWS (2024-12-17)
             const response = await axios.get('http://3.140.238.209:8000/random');
-            console.log(response)
             setText(response.data[0].text);
             setSpeaker(response.data[0].speaker);
         } catch (error) {
