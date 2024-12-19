@@ -2,7 +2,7 @@ use axum::{
     routing::{get, post},
     Router,
 };
-use axum::http::header::{HeaderValue, ACCESS_CONTROL_ALLOW_ORIGIN};
+use axum::http::header::{HeaderValue, ACCESS_CONTROL_ALLOW_ORIGIN, CACHE_CONTROL};
 use std::{fs::File, sync::Arc};
 use tokio::net::TcpListener;
 use tower_http::set_header::SetResponseHeaderLayer;
@@ -40,6 +40,10 @@ fn app() -> Router {
         .layer(SetResponseHeaderLayer::if_not_present(
             ACCESS_CONTROL_ALLOW_ORIGIN,
             HeaderValue::from_static("*"),
+        ))
+        .layer(SetResponseHeaderLayer::if_not_present(
+            CACHE_CONTROL,
+            HeaderValue::from_static("max-age=31536000"),
         ))
         .fallback(not_found)
 }
