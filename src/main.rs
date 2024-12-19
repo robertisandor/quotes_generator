@@ -43,7 +43,7 @@ fn app() -> Router {
         ))
         .layer(SetResponseHeaderLayer::if_not_present(
             CACHE_CONTROL,
-            HeaderValue::from_static("max-age=31536000"),
+            HeaderValue::from_static("max-age=31536000, public"),
         ))
         .fallback(not_found)
 }
