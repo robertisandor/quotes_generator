@@ -470,3 +470,36 @@ resource "aws_instance" "web" {
         Name = "QuotesApiWeb"
     }
 }
+
+resource "aws_route53_zone" "primary" {
+  name = "quotes-generator.net"
+}
+
+resource "aws_route53_record" "www" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "quotes-generator.net"
+  type    = "A"
+  ttl     = 300
+  records = [aws_instance.web.public_ip]
+}
+
+resource "aws_route53_record" "nameserver" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "quotes-generator.net"
+  type    = "NS"
+  ttl     = 172800
+  records = [
+    "ns-557.awsdns-05.net.", 
+    "ns-419.awsdns-52.com.", 
+    "ns-1492.awsdns-58.org.", 
+    "ns-1915.awsdns-47.co.uk."
+  ]
+}
+
+resource "aws_route53_record" "start_of_authority" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "quotes-generator.net"
+  type    = "SOA"
+  ttl     = 900
+  records = ["ns-557.awsdns-05.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"]
+}
