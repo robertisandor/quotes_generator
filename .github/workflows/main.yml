@@ -208,5 +208,5 @@ jobs:
             CI=true sudo docker rm quotes-generator || true
             CI=true sudo docker rm quotes-generator-frontend || true
             CI=true sudo docker run --name=quotes-generator --env-file .env -d -p 8000:8000 risandor/quotes_generator:0.1.0
-            CI=true sudo docker run --name=quotes-generator-frontend --env-file .env -d -p 3000:3000 risandor/quotes_generator_frontend:0.1.0
+            CI=true sudo docker run --name=quotes-generator-frontend --env-file .env -d -p 80:80 risandor/quotes_generator_frontend:0.1.0
             

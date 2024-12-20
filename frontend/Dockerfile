@@ -5,6 +5,6 @@ COPY ./quotes-generator/package.json /usr/src/app/
 RUN npm install --force
 ADD ./quotes-generator/src /usr/src/app/src
 ADD ./quotes-generator/public /usr/src/app/public
-EXPOSE 3000
+EXPOSE 80
 RUN npm run build && npm install -g serve
-CMD [ "serve", "-s", "build" ]
+CMD [ "export", "PORT=80", "serve", "-s", "build" ]
