@@ -88,7 +88,7 @@ resource "aws_db_instance" "quotes_generator" {
   instance_class         = "db.t3.micro"
   allocated_storage      = 5
   engine                 = "postgres"
-  engine_version         = "15.5"
+  engine_version         = "15.7"
   db_name                = "quotes_db"
   username               = "postgres"
   password               = var.db_password
