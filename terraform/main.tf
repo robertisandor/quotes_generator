@@ -471,6 +471,7 @@ resource "aws_instance" "web" {
     }
 }
 
+/*
 resource "aws_route53_zone" "primary" {
   name = "quotes-generator.net"
 }
@@ -480,7 +481,7 @@ resource "aws_route53_record" "www" {
   name    = "quotes-generator.net"
   type    = "A"
   ttl     = 300
-  records = [aws_instance.web.public_ip]
+  records = [aws_instance.web.public_ip] # 3.140.238.209
 }
 
 resource "aws_route53_record" "nameserver" {
@@ -503,3 +504,4 @@ resource "aws_route53_record" "start_of_authority" {
   ttl     = 900
   records = ["ns-557.awsdns-05.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"]
 }
+*/
