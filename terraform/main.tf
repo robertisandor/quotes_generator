@@ -14,7 +14,7 @@ terraform {
     region         = "us-east-2"
     encrypt        = true
     kms_key_id     = "alias/quotes-generator-terraform-bucket-key"
-    dynamodb_table = "terraform-state"
+    use_lockfile   = true
   }
 }
 
