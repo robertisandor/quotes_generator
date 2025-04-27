@@ -23,7 +23,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "inflation-price-tracker" {
-  bucket = "inflation-price-tracker-prod"
+  bucket = "inflation-price-tracker-production"
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "quotes" {
