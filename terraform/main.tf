@@ -22,32 +22,32 @@ provider "aws" {
   region = "us-east-2"
 }
 
-resource "aws_s3_bucket" "quotes-generator" {
-  bucket = "quotes-generator"
+resource "aws_s3_bucket" "inflation-price-tracker" {
+  bucket = "inflation-price-tracker"
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "quotes" {
-  bucket = aws_s3_bucket.quotes-generator.id 
+  bucket = aws_s3_bucket.inflation-price-tracker.id 
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.quotes-generator-terraform-bucket-key.arn
+      kms_master_key_id = aws_kms_key.inflation-price-tracker-terraform-bucket-key.arn
       sse_algorithm     = "aws:kms"
     }
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "quotes-generator" {
-  bucket = aws_s3_bucket.quotes-generator.id
+resource "aws_s3_bucket_ownership_controls" "inflation-price-tracker" {
+  bucket = aws_s3_bucket.inflation-price-tracker.id
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
 }
 
-resource "aws_s3_bucket_acl" "quotes-generator" {
-  depends_on = [aws_s3_bucket_ownership_controls.quotes-generator]
+resource "aws_s3_bucket_acl" "inflation-price-tracker" {
+  depends_on = [aws_s3_bucket_ownership_controls.inflation-price-tracker]
 
-  bucket = aws_s3_bucket.quotes-generator.id
+  bucket = aws_s3_bucket.inflation-price-tracker.id
   acl    = "private"
 }
 
@@ -60,15 +60,15 @@ resource "aws_s3_bucket_public_access_block" "block" {
   restrict_public_buckets = true
 }
 
-resource "aws_kms_key" "quotes-generator-terraform-bucket-key" {
+resource "aws_kms_key" "inflation-price-tracker-terraform-bucket-key" {
   description             = "This key is used to encrypt bucket objects"
   deletion_window_in_days = 10
   enable_key_rotation     = true
 }
  
 resource "aws_kms_alias" "key-alias" {
-  name          = "alias/quotes-generator-terraform-bucket-key"
-  target_key_id = aws_kms_key.quotes-generator-terraform-bucket-key.key_id
+  name          = "alias/inflation-price-tracker-terraform-bucket-key"
+  target_key_id = aws_kms_key.inflation-price-tracker-terraform-bucket-key.key_id
 }
 
 resource "aws_dynamodb_table" "terraform-state" {
@@ -83,6 +83,7 @@ resource "aws_dynamodb_table" "terraform-state" {
   }
 }
 
+/*
 resource "aws_db_instance" "quotes_generator" {
   identifier             = "quotes-generator"
   instance_class         = "db.t3.micro"
@@ -471,7 +472,6 @@ resource "aws_instance" "web" {
     }
 }
 
-/*
 resource "aws_route53_zone" "primary" {
   name = "quotes-generator.net"
 }
