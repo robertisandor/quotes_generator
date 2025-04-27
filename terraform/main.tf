@@ -23,7 +23,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "inflation-price-tracker" {
-  bucket = "inflation-price-tracker"
+  bucket = "inflation-price-tracker-prod"
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "quotes" {
@@ -52,7 +52,7 @@ resource "aws_s3_bucket_acl" "inflation-price-tracker" {
 }
 
 resource "aws_s3_bucket_public_access_block" "block" {
-  bucket = aws_s3_bucket.quotes-generator.id
+  bucket = aws_s3_bucket.inflation-price-tracker.id
  
   block_public_acls       = true
   block_public_policy     = true
