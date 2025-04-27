@@ -60,15 +60,15 @@ resource "aws_s3_bucket_public_access_block" "block" {
   restrict_public_buckets = true
 }
 
-resource "aws_kms_key" "inflation-price-tracker-terraform-bucket-key" {
+resource "aws_kms_key" "inflation-price-tracker-prod-terraform-bucket-key" {
   description             = "This key is used to encrypt bucket objects"
   deletion_window_in_days = 10
   enable_key_rotation     = true
 }
  
 resource "aws_kms_alias" "key-alias" {
-  name          = "alias/inflation-price-tracker-terraform-bucket-key"
-  target_key_id = aws_kms_key.inflation-price-tracker-terraform-bucket-key.key_id
+  name          = "alias/inflation-price-tracker-prod-terraform-bucket-key"
+  target_key_id = aws_kms_key.inflation-price-tracker-prod-terraform-bucket-key.key_id
 }
 
 resource "aws_dynamodb_table" "terraform-state" {
