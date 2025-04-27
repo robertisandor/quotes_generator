@@ -9,11 +9,11 @@ terraform {
   required_version = ">= 0.14.6"
   
   backend "s3" {
-    bucket         = "quotes-generator"
+    bucket         = "inflation-price-tracker-prod"
     key            = "state/terraform.tfstate"
     region         = "us-east-2"
     encrypt        = true
-    kms_key_id     = "alias/quotes-generator-terraform-bucket-key"
+    kms_key_id     = "alias/inflation-price-tracker-terraform-bucket-key"
     use_lockfile   = true
   }
 }
