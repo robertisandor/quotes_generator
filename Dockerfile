@@ -8,9 +8,9 @@ RUN apt-get update \
     build-essential=12.9ubuntu3 \
     curl=7.81.0-1ubuntu1.20 \
     pkg-config=0.29.2-1ubuntu3 \
-    libssl-dev=3.0.2-0ubuntu1.18 \
+    libssl-dev\
     postgresql-14 \
-    libpq-dev=14.15-0ubuntu0.22.04.1 \
+    libpq-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* 
 
@@ -31,7 +31,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    libpq-dev=14.15-0ubuntu0.22.04.1 \
+    libpq-dev \
     ca-certificates=20240203~22.04.1 \
     curl=7.81.0-1ubuntu1.20 \
     && apt-get clean \
