@@ -266,11 +266,9 @@
 {"753": {"address_line1": "679 E Dundee Rd", "city": "Palatine", "country": "United States of America", "country_code": "US", "county": "Cook", "state": "Illinois", "postal_code": "60074-2817", "region": "IL"}}
 {"754": {"address_line1": "6365 I 55 N", "city": "Jackson", "country": "United States of America", "country_code": "US", "county": "Hinds", "state": "Mississippi", "postal_code": "39213-9742", "region": "MS"}}
 {"755": {"address_line1": "2056 Skibo Rd", "city": "Fayetteville", "country": "United States of America", "country_code": "US", "county": "Cumberland", "state": "North Carolina", "postal_code": "28314-2245", "region": "NC"}}
-{"756": {"address_line1": "2116 N Roan St", "city": "Johnson City", "country": "United States of America", "country_code": "US", "county": "Washington", "state": 
-"Tennessee", "postal_code": "37601-2535", "region": "TN"}}
+{"756": {"address_line1": "2116 N Roan St", "city": "Johnson City", "country": "United States of America", "country_code": "US", "county": "Washington", "state": "Tennessee", "postal_code": "37601-2535", "region": "TN"}}
 {"757": {"address_line1": "5151 Frederica St", "city": "Owensboro", "country": "United States of America", "country_code": "US", "county": "Daviess", "state": "Kentucky", "postal_code": "42301-7443", "region": "KY"}}
-{"758": {"address_line1": "8550 Tom Landry Fwy", "city": "Fort Worth", "country": "United States of America", "country_code": "US", "county": "Tarrant", "state": 
-"Texas", "postal_code": "76120-4414", "region": "TX"}}
+{"758": {"address_line1": "8550 Tom Landry Fwy", "city": "Fort Worth", "country": "United States of America", "country_code": "US", "county": "Tarrant", "state": "Texas", "postal_code": "76120-4414", "region": "TX"}}
 {"759": {"address_line1": "2460 Prince William Pkwy", "city": "Woodbridge", "country": "United States of America", "country_code": "US", "county": "Prince William", "state": "Virginia", "postal_code": "22192-4148", "region": "VA"}}
 {"760": {"address_line1": "12 N Fair Ave", "city": "Yakima", "country": "United States of America", "country_code": "US", "county": "Yakima", "state": "Washington", "postal_code": "98901-4520", "region": "WA"}}
 {"761": {"address_line1": "3527 W Florida Ave", "city": "Hemet", "country": "United States of America", "country_code": "US", "county": "Riverside", "state": "California", "postal_code": "92545-3564", "region": "CA"}}
@@ -284,7 +282,6 @@
 {"773": {"address_line1": "2673 E Main St", "city": "Plainfield", "country": "United States of America", "country_code": "US", "county": "Hendricks", "state": "Indiana", "postal_code": "46168-2710", "region": "IN"}}
 {"774": {"address_line1": "3151 E 7th St", "city": "Joplin", "country": "United States of America", "country_code": "US", "county": "Jasper", "state": "Missouri", "postal_code": "64801-5581", "region": "MO"}}
 {"775": {"address_line1": "7003 S Broadway Ave", "city": "Tyler", "country": "United States of America", "country_code": "US", "county": "Smith", "state": "Texas", "postal_code": "75703-4737", "region": "TX"}}
-{"778": {"address_line1": "107 Pavilion Pkwy", "city": "Fayetteville", "country": "United States of America", "country_code": "US", "county": "Fayette", "state": 
-"Georgia", "postal_code": "30214-4098", "region": "GA"}}
+{"778": {"address_line1": "107 Pavilion Pkwy", "city": "Fayetteville", "country": "United States of America", "country_code": "US", "county": "Fayette", "state": "Georgia", "postal_code": "30214-4098", "region": "GA"}}
 {"779": {"address_line1": "1631 Ring Rd", "city": "Elizabethtown", "country": "United States of America", "country_code": "US", "county": "Hardin", "state": "Kentucky", "postal_code": "42701-5470", "region": "KY"}}
 {"780": {"address_line1": "4640 Taylorsville Rd", "city": "Louisville", "country": "United States of America", "country_code": "US", "county": "Jefferson", "state": "Kentucky", "postal_code": "40220-3530", "region": "KY"}}
