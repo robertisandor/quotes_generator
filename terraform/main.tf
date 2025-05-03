@@ -116,7 +116,7 @@ resource "aws_iam_role" "target_webscraper_role" {
                   "logs:PutLogEvents"
               ],
               "Resource": [
-                  "arn:aws:logs:us-east-2:487577641151:log-group:/aws/lambda/target_webscraper:*"
+                  "arn:aws:logs:us-east-2:487577641151:log-group:/aws/lambda/target_webscraper_api:*"
               ]
           },
           {
