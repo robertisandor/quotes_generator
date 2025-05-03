@@ -77,7 +77,7 @@ resource "aws_kms_alias" "key-alias" {
 
 data "archive_file" "lambda" {
   type        = "zip"
-  source_dir  = "${path.root}/ingestion/package"
+  source_dir  = "../ingestion/package"
   output_path = "target_webscraper_deployment_package.zip"
 }
 
