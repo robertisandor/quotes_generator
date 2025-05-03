@@ -154,7 +154,6 @@ data "aws_iam_policy_document" "assume_role" {
 
 resource "aws_cloudwatch_log_group" "target_webscraper_api" {
   name = "/aws/lambda/target_webscraper_api"
-  log_group_class = "STANDARD"
   retention_in_days = 0
 }
 
