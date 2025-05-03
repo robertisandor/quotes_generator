@@ -55,6 +55,7 @@ jobs:
       - name: Terraform Init
         run: >-
           terraform init -migrate-state -force-copy;
+          terraform import aws_s3_bucket.inflation-price-tracker inflation-price-tracker-production
         working-directory: ${{ env.CONFIG_DIRECTORY }}
 
       # Generates an execution plan for Terraform

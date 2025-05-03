@@ -24,6 +24,10 @@ provider "aws" {
 
 resource "aws_s3_bucket" "inflation-price-tracker" {
   bucket = "inflation-price-tracker-production"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "quotes" {
