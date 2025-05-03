@@ -13,7 +13,7 @@ terraform {
     key            = "state/terraform.tfstate"
     region         = "us-east-2"
     encrypt        = true
-    kms_key_id     = "alias/inflation-price-tracker-prod-terraform-bucket-key"
+    kms_key_id     = "alias/inflation-price-tracker-production-terraform-bucket-key"
     use_lockfile   = true
   }
 }
@@ -31,7 +31,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "quotes" {
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.inflation-price-tracker-prod-terraform-bucket-key.arn
+      kms_master_key_id = aws_kms_key.inflation-price-tracker-production-terraform-bucket-key.arn
       sse_algorithm     = "aws:kms"
     }
   }
