@@ -60,17 +60,18 @@ resource "aws_s3_bucket_public_access_block" "block" {
   restrict_public_buckets = true
 }
 
-resource "aws_kms_key" "inflation-price-tracker-prod-terraform-bucket-key" {
+resource "aws_kms_key" "inflation-price-tracker-production-terraform-bucket-key" {
   description             = "This key is used to encrypt bucket objects"
   deletion_window_in_days = 10
   enable_key_rotation     = true
 }
  
 resource "aws_kms_alias" "key-alias" {
-  name          = "alias/inflation-price-tracker-prod-terraform-bucket-key"
-  target_key_id = aws_kms_key.inflation-price-tracker-prod-terraform-bucket-key.key_id
+  name          = "alias/inflation-price-tracker-production-terraform-bucket-key"
+  target_key_id = aws_kms_key.inflation-price-tracker-production-terraform-bucket-key.key_id
 }
 
+/*
 resource "aws_dynamodb_table" "terraform-state" {
   name           = "terraform-state"
   read_capacity  = 20
@@ -83,7 +84,7 @@ resource "aws_dynamodb_table" "terraform-state" {
   }
 }
 
-/*
+
 resource "aws_db_instance" "quotes_generator" {
   identifier             = "quotes-generator"
   instance_class         = "db.t3.micro"
