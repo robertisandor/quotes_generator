@@ -75,19 +75,44 @@ resource "aws_kms_alias" "key-alias" {
   target_key_id = aws_kms_key.inflation-price-tracker-production-terraform-bucket-key.key_id
 }
 
-/*
-resource "aws_dynamodb_table" "terraform-state" {
-  name           = "terraform-state"
-  read_capacity  = 20
-  write_capacity = 20
-  hash_key       = "LockID"
- 
-  attribute {
-    name = "LockID"
-    type = "S"
+data "archive_file" "lambda" {
+  type        = "zip"
+  source_dir  = "${path.root}/ingestion/package"
+  output_path = "target_webscraper_deployment_package.zip"
+}
+
+resource "aws_lambda_function" "target_webscraper" {
+  filename          = "target_webscraper_deployment_package.zip"
+  function_name     = "target_webscraper_api"
+  role              = aws_iam_role.target_webscraper_role.arn 
+  handler           = "target_webscraper.lambda_handler"
+  timeout           = 60
+  memory_size       = 128
+  architectures     = ["x86_64"]
+
+  source_code_hash  = data.archive_file.lambda.output_base64sha256
+  runtime           = "python3.13"
+}
+
+resource "aws_iam_role" "target_webscraper_role" {
+  name               = "target_webscraper_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
   }
 }
 
+/*
 
 resource "aws_db_instance" "quotes_generator" {
   identifier             = "quotes-generator"
