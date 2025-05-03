@@ -97,6 +97,46 @@ resource "aws_lambda_function" "target_webscraper" {
 resource "aws_iam_role" "target_webscraper_role" {
   name               = "target_webscraper_role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+
+  inline_policy {
+    name = "lambda_basic_execution_role"
+
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": "logs:CreateLogGroup",
+              "Resource": "arn:aws:logs:us-east-2:487577641151:*"
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+              ],
+              "Resource": [
+                  "arn:aws:logs:us-east-2:487577641151:log-group:/aws/lambda/target_webscraper:*"
+              ]
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*",
+                "s3-object-lambda:*"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "kms:*",
+            ],
+            "Resource": "*"
+          }
+      ]
+    })
+  }
 }
 
 data "aws_iam_policy_document" "assume_role" {
