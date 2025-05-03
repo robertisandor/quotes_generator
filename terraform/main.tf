@@ -91,7 +91,7 @@ resource "aws_lambda_function" "target_webscraper" {
   architectures     = ["x86_64"]
 
   source_code_hash  = data.archive_file.lambda.output_base64sha256
-  runtime           = "python3.11"
+  runtime           = "python3.10"
 }
 
 resource "aws_iam_role" "target_webscraper_role" {
