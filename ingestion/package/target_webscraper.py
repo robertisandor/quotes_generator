@@ -35,7 +35,7 @@ def lambda_handler(event, context):
         stores = stores | json.loads(line)
 
     api_urls = []
-    for store_id in list(stores.keys())[:30]:
+    for store_id in list(stores.keys()):
         for tcin in tcins:
             api_urls.append({'store': stores[store_id], 'tcin': tcin, 'url': f'https://redsky.target.com/redsky_aggregations/v1/web/pdp_client_v1?key=9f36aeafbe60771e321a7cc95a78140772ab3e96&tcin={tcin}&is_bot=false&store_id={store_id}&pricing_store_id={store_id}&has_pricing_store_id=true&has_financing_options=true&include_obsolete=true&visitor_id=0196569BE874020187481D35502016A6&skip_personalized=true&skip_variation_hierarchy=true&channel=WEB&page=%2Fp%2FA-86918585'})
     print(f'Number of api urls: {len(api_urls)}')
