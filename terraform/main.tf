@@ -9,7 +9,7 @@ terraform {
   required_version = ">= 0.14.6"
   
   backend "s3" {
-    bucket         = "inflation-price-tracker-prod"
+    bucket         = "inflation-price-tracker-production"
     key            = "state/terraform.tfstate"
     region         = "us-east-2"
     encrypt        = true
