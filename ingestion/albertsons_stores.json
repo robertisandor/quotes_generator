@@ -1,3 +1,3 @@
-{"1": {"line1": "1340 Patriot Blvd", "city": "Glenview", "state": "IL", "country": "US", "zipcode": "60026"}, "retailer_name": "Jewel-Osco"}
-{"2": {"line1": "201 S Stephanie St", "city": "Henderson", "state": "NV", "country": "US", "zipcode": "89012"}, "retailer_name": "Albertsons"}
-{"4": {"line1": "3130 W Carefree Hwy", "city": "Phoenix", "state": "AZ", "country": "US", "zipcode": "85086"}, "retailer_name": "Albertsons"}
+{"1": {"address": {"line1": "1340 Patriot Blvd", "city": "Glenview", "state": "IL", "country": "US", "zipcode": "60026"}, "parent_retailer_company_name": "Albertsons", "retailer_name": "Jewel-Osco"}}
+{"2": {"address": {"line1": "201 S Stephanie St", "city": "Henderson", "state": "NV", "country": "US", "zipcode": "89012"}, "parent_retailer_company_name": "Albertsons", "retailer_name": "Albertsons"}}
+{"4": {"address": {"line1": "3130 W Carefree Hwy", "city": "Phoenix", "state": "AZ", "country": "US", "zipcode": "85086"}, "parent_retailer_company_name": "Albertsons", "retailer_name": "Albertsons"}}
