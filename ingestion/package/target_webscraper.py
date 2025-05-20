@@ -17,6 +17,10 @@ def lambda_handler(event, context):
     s3_key_prefix = f'ingestion/raw/year={ingestion_datetime.year}/month={ingestion_datetime.month}/day={ingestion_datetime.day}/'
     # TODO: see if I can populate tcins for categories in a better way than manually
     # https://redsky.target.com/redsky_aggregations/v1/web/product_summary_with_fulfillment_v1?key=9f36aeafbe60771e321a7cc95a78140772ab3e96&tcins=86918585%2C86918586%2C88379079%2C88392075%2C88379077%2C91113072%2C91113074%2C91113073%2C92274834%2C88198408%2C90780399&store_id=299&zip=91335&state=CA&latitude=34.200&longitude=-118.540&scheduled_delivery_store_id=288&paid_membership=false&base_membership=false&card_membership=false&required_store_id=299&skip_price_promo=true&visitor_id=0196B3A112720201A125BFE3266679FE&channel=WEB&page=%2Fs%2Fkendamil+formula
+    # data.product_summaries[x].tcin
+    # potential alternative
+    # https://redsky.target.com/redsky_aggregations/v1/web/plp_search_v2?key=9f36aeafbe60771e321a7cc95a78140772ab3e96&channel=WEB&count=24&default_purchasability_filter=true&include_dmc_dmr=true&include_sponsored=true&include_review_summarization=false&keyword=baby+formula&new_search=true&offset=0&page=%2Fs%2Fbaby+formula&platform=desktop&pricing_store_id=321&scheduled_delivery_store_id=321&spellcheck=true&store_ids=321%2C1122%2C322%2C1472%2C2584&useragent=Mozilla%2F5.0+%28Macintosh%3B+Intel+Mac+OS+X+10_15_7%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F136.0.0.0+Safari%2F537.36&visitor_id=0196D611DAF202018C6B162B6F6FDA42&zip=94070
+    # data.search.products[x].tcin
     tcins = ['86918585', '87956594', '86918586', '14901126']
 
     session = Session()
@@ -30,10 +34,10 @@ def lambda_handler(event, context):
     stores_s3_filepath = f'ingestion/raw/year={ingestion_datetime.year}/month={ingestion_datetime.month}/day=1/country=US/target_stores.json'
     target_stores_data = s3.get_object(Bucket=s3_bucket_name, Key=stores_s3_filepath)
     target_stores_json = target_stores_data['Body'].readlines()
-    print(f'Number of stores: {len(target_stores_json)}')
 
-    for line in target_stores_json:
-        stores = stores | json.loads(line)
+    for store_dict in json.loads(target_stores_json[0]):
+        stores.update(store_dict)
+    print(f'Number of stores: {len(list(stores.keys()))}')
 
     uploaded_states = set()
     existing_states_response = s3.list_objects_v2(Bucket=s3_bucket_name, Prefix=s3_key_prefix)
@@ -50,6 +54,9 @@ def lambda_handler(event, context):
     stores_by_state = {}
     for store in stores:
         stores[store]['store_id'] = store
+        if 'region' not in stores[store]:
+            print(f'No region for store: {store}')
+            break
         # check if the state is an existing key 
         if stores[store]['region'] not in stores_by_state and stores[store]['region'] not in uploaded_states:
             stores_by_state[stores[store]['region']] = {'stores': [stores[store]], 'api_urls': []}
@@ -66,9 +73,10 @@ def lambda_handler(event, context):
                     stores_by_state[state]['api_urls'].append({'store': store, 'tcin': tcin, 'url': f'https://redsky.target.com/redsky_aggregations/v1/web/pdp_client_v1?key=9f36aeafbe60771e321a7cc95a78140772ab3e96&tcin={tcin}&is_bot=false&store_id={store["store_id"]}&pricing_store_id={store["store_id"]}&has_pricing_store_id=true&has_financing_options=true&include_obsolete=true&visitor_id=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&skip_personalized=true&skip_variation_hierarchy=true&channel=WEB&page=%2Fp%2FA-86918585'})
 
     products = {}
-
+    total_error_count = 0
     # pull data from API
     for state in list(stores_by_state.keys()):
+        state_error_count = 0
         if state not in uploaded_states:
             print(f'State: {state}, # of api urls: {len(stores_by_state[state]["api_urls"])}')
             for api_url in stores_by_state[state]['api_urls']:
@@ -108,18 +116,22 @@ def lambda_handler(event, context):
                     products[country][state].append(product)
                 elif 'errors' in data and data['errors'][0]['message'] == 'Not Found':
                     # this likely pops up because i'm being rate-limited by the store location api
-                    print(f"tcin: {api_url['tcin']} not available in store with store_id: {api_url['store']}")
+                    state_error_count += 1
+                    print(f"tcin: {api_url['tcin']} not available in store with store_id: {api_url['store']['store_id']}")
                     continue
                 else:
                     print(data)
                     break
+        print(f'error count for {state}: {state_error_count}')
+        total_error_count += state_error_count
     print('finished retrieving product data')
+    print(f'total error count: {total_error_count}')
 
     # write files to s3
     for country in products:
         for state in products[country]:        
             filename = f'{datetime.date.today()}_{country}_{state}_{retailer}.json'
-            s3_key = s3_key_prefix + f'country={country}/state={state}/{filename}'
+            s3_key = s3_key_prefix + f'country={country}/region={state}/{filename}'
             file_content = json.dumps(products[country][state]).encode('utf-8')
             s3.put_object(Body=file_content, Bucket=s3_bucket_name, Key=s3_key)
             print(f'wrote {filename} to s3')

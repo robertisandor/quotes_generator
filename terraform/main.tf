@@ -86,7 +86,7 @@ resource "aws_lambda_function" "target_webscraper" {
   function_name     = "target_webscraper_api"
   role              = aws_iam_role.target_webscraper_role.arn 
   handler           = "target_webscraper.lambda_handler"
-  timeout           = 60
+  timeout           = 600
   memory_size       = 128
   architectures     = ["x86_64"]
 
@@ -154,6 +154,170 @@ data "aws_iam_policy_document" "assume_role" {
 
 resource "aws_cloudwatch_log_group" "target_webscraper_api" {
   name = "/aws/lambda/target_webscraper_api"
+  retention_in_days = 0
+}
+
+data "archive_file" "target_store_location_webscraper_lambda" {
+  type        = "zip"
+  source_dir  = "../ingestion/target_store_location_webscraper_package"
+  output_path = "target_store_location_webscraper_package.zip"
+}
+
+resource "aws_lambda_function" "target_store_location_webscraper" {
+  filename          = "target_store_location_webscraper_package.zip"
+  function_name     = "target_store_location_webscraper_api"
+  role              = aws_iam_role.target_store_location_webscraper_role.arn 
+  handler           = "target_store_location_webscraper.lambda_handler"
+  timeout           = 600
+  memory_size       = 512
+  architectures     = ["x86_64"]
+
+  source_code_hash  = data.archive_file.lambda.output_base64sha256
+  runtime           = "python3.10"
+}
+
+resource "aws_iam_role" "target_store_location_webscraper_role" {
+  name               = "target_store_location_webscraper_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+
+  inline_policy {
+    name = "lambda_basic_execution_role"
+
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": "logs:CreateLogGroup",
+              "Resource": "arn:aws:logs:us-east-2:487577641151:*"
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+              ],
+              "Resource": [
+                  "arn:aws:logs:us-east-2:487577641151:log-group:/aws/lambda/target_store_location_webscraper_api:*"
+              ]
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*",
+                "s3-object-lambda:*"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "kms:*",
+            ],
+            "Resource": "*"
+          }
+      ]
+    })
+  }
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_cloudwatch_log_group" "target_store_location_webscraper_api" {
+  name = "/aws/lambda/target_store_location_webscraper_api"
+  retention_in_days = 0
+}
+
+data "archive_file" "albertsons_store_location_webscraper_lambda" {
+  type        = "zip"
+  source_dir  = "../ingestion/albertsons_store_location_webscraper_package"
+  output_path = "albertsons_store_location_webscraper_package.zip"
+}
+
+resource "aws_lambda_function" "albertsons_store_location_webscraper" {
+  filename          = "albertsons_store_location_webscraper_package.zip"
+  function_name     = "albertsons_store_location_webscraper_api"
+  role              = aws_iam_role.albertsons_store_location_webscraper_role.arn 
+  handler           = "albertsons_store_location_webscraper.lambda_handler"
+  timeout           = 600
+  memory_size       = 128
+  architectures     = ["x86_64"]
+
+  source_code_hash  = data.archive_file.lambda.output_base64sha256
+  runtime           = "python3.10"
+}
+
+resource "aws_iam_role" "albertsons_store_location_webscraper_role" {
+  name               = "albertsons_store_location_webscraper_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+
+  inline_policy {
+    name = "lambda_basic_execution_role"
+
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": "logs:CreateLogGroup",
+              "Resource": "arn:aws:logs:us-east-2:487577641151:*"
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+              ],
+              "Resource": [
+                  "arn:aws:logs:us-east-2:487577641151:log-group:/aws/lambda/albertsons_store_location_webscraper_api:*"
+              ]
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*",
+                "s3-object-lambda:*"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "kms:*",
+            ],
+            "Resource": "*"
+          }
+      ]
+    })
+  }
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_cloudwatch_log_group" "albertsons_store_location_webscraper_api" {
+  name = "/aws/lambda/albertsons_store_location_webscraper_api"
   retention_in_days = 0
 }
 

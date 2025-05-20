@@ -38,7 +38,11 @@ def lambda_handler(event, context):
     else:
         print('No existing target stores data found.')
 
-    for store_id in range(max(list(stores.keys())), 3600):
+    start_store_id = 1
+    if len(stores.keys()) > 0:
+        start_store_id = max([int(store_id) for store_id in list(stores.keys())])
+
+    for store_id in range(start_store_id, start_store_id + 2000):
         if store_id % 100 == 0:
             print(f'Finished retrieving data for stores with id: {store_id}.')
         if str(store_id) not in stores.keys():
