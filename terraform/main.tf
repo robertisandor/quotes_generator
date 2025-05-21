@@ -221,19 +221,6 @@ resource "aws_iam_role" "target_store_location_webscraper_role" {
   }
 }
 
-data "aws_iam_policy_document" "assume_role" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}
-
 resource "aws_cloudwatch_log_group" "target_store_location_webscraper_api" {
   name = "/aws/lambda/target_store_location_webscraper_api"
   retention_in_days = 0
@@ -300,19 +287,6 @@ resource "aws_iam_role" "albertsons_store_location_webscraper_role" {
           }
       ]
     })
-  }
-}
-
-data "aws_iam_policy_document" "assume_role" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
   }
 }
 
