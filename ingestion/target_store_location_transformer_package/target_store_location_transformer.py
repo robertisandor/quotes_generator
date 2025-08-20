@@ -1,3 +1,4 @@
+
 import boto3 
 import io
 import json 
@@ -45,19 +46,19 @@ def lambda_handler(event, context):
     stores_output = {}
     counter = 0
     for store_id in stores.keys():
-        if counter % 100 == 0:
-            print(f'Finished transforming data for store with store_id: {store_id}.')
         stores_output[store_id] = {
             'store_id': store_id,
-            'address_line1': stores['data']['store']['mailing_address']['address_line1'], 
-            'city': stores['data']['store']['mailing_address']['city'], 
-            'region': stores['data']['store']['mailing_address']['region'],
-            'country_code': stores['data']['store']['mailing_address']['country_code'], 
-            'postal_code': stores['data']['store']['mailing_address']['postal_code'], 
+            'address_line1': stores[store_id]['mailing_address']['address_line1'], 
+            'city': stores[store_id]['mailing_address']['city'], 
+            'region': stores[store_id]['mailing_address']['region'],
+            'country_code': stores[store_id]['mailing_address']['country_code'], 
+            'postal_code': stores[store_id]['mailing_address']['postal_code'], 
             'retailer_name': 'Target', 
             'parent_retailer_company_name': 'Target', 
-            'ingestion_datetime': stores['data']['store']['ingestion_datetime']
+            'ingestion_datetime': stores[store_id]['ingestion_datetime']
         }
+        if counter % 100 == 0:
+            print(f'Finished transforming data for store with store_id: {store_id}.')
             
     print("Finished transforming stores data.")
 
