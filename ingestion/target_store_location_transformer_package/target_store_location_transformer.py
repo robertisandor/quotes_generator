@@ -11,13 +11,6 @@ def lambda_handler(event, context):
 
     s3 = boto3.client('s3')
 
-    store_location_schema = pa.schema([
-        ('address', pa.string()),
-        ('retailer_name', pa.string()),
-        ('parent_retailer_company_name', pa.string()),
-        ('ingestion_time', pa.timestamp('ms')),
-    ])
-
     stores = {}
     s3_key_input_prefix = f'ingestion/raw/locations/country=US/'
     s3_key_output_prefix = f'ingestion/transformed/targets/country=US/'
@@ -43,20 +36,29 @@ def lambda_handler(event, context):
     else:
         print('No existing target stores data found.')
 
-    stores_output = {}
+    stores_output = {
+        'store_id': [],
+        'address_line1': [],
+        'city': [],
+        'region': [],
+        'country_code': [],
+        'postal_code': [],
+        'retailer_name': [],
+        'parent_retailer_company_name': [],
+        'ingestion_datetime': []
+    }
     counter = 0
     for store_id in stores.keys():
-        stores_output[store_id] = {
-            'store_id': store_id,
-            'address_line1': stores[store_id]['mailing_address']['address_line1'], 
-            'city': stores[store_id]['mailing_address']['city'], 
-            'region': stores[store_id]['mailing_address']['region'],
-            'country_code': stores[store_id]['mailing_address']['country_code'], 
-            'postal_code': stores[store_id]['mailing_address']['postal_code'], 
-            'retailer_name': 'Target', 
-            'parent_retailer_company_name': 'Target', 
-            'ingestion_datetime': stores[store_id]['ingestion_datetime']
-        }
+        stores_output['store_id'].append(store_id)
+        stores_output['address_line1'].append(stores[store_id]['mailing_address']['address_line1'])
+        stores_output['city'].append(stores[store_id]['mailing_address']['city'])
+        stores_output['region'].append(stores[store_id]['mailing_address']['region'])
+        stores_output['country_code'].append(stores[store_id]['mailing_address']['country_code'])
+        stores_output['postal_code'].append(stores[store_id]['mailing_address']['postal_code'])
+        stores_output['retailer_name'].append('Target')
+        stores_output['parent_retailer_company_name'].append('Target')
+        stores_output['ingestion_datetime'].append(stores[store_id]['ingestion_datetime'])
+        counter += 1
         if counter % 100 == 0:
             print(f'Finished transforming data for store with store_id: {store_id}.')
             
