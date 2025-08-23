@@ -314,7 +314,7 @@ resource "aws_lambda_function" "target_store_location_transformer" {
   runtime           = "python3.13"
 }
 
-resource "aws_iam_role" "target_store_location_transformer" {
+resource "aws_iam_role" "target_store_location_transformer_role" {
   name               = "target_store_location_transformer"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 
