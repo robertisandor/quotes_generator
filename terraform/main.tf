@@ -455,7 +455,7 @@ resource "aws_glue_job" "store_location_glue_table_creation" {
   execution_class   = "STANDARD"
 
   command {
-    script_location = "s3://${aws_s3_bucket.inflation-price-tracker.bucket}/${aws_s3_object.store_locations_glue_table_creation_script}"
+    script_location = "s3://${aws_s3_bucket.inflation-price-tracker.bucket}/${aws_s3_object.store_locations_glue_table_creation_script.key}"
     name            = "glueetl"
     python_version  = "3"
   }
