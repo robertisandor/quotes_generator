@@ -311,7 +311,7 @@ resource "aws_lambda_function" "target_store_location_transformer" {
   architectures     = ["x86_64"]
 
   source_code_hash  = data.archive_file.lambda.output_base64sha256
-  runtime           = "python3.13"
+  runtime           = "python3.10"
 }
 
 resource "aws_iam_role" "target_store_location_transformer_role" {
