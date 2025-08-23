@@ -364,6 +364,77 @@ resource "aws_cloudwatch_log_group" "target_store_location_transformer" {
   retention_in_days = 0
 }
 
+resource "aws_glue_catalog_database" "inflation_price_tracker" {
+  name = "inflation_price_tracker"
+}
+
+resource "aws_glue_catalog_table" "store_locations" {
+  name          = "store_locations"
+  database_name = aws_glue_catalog_database.inflation_price_tracker.name
+  table_type    = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+    location      = "s3://inflation-price-tracker-production/ingestion/transformed/target/country%3DUS/target_stores.parquet"
+    input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+    compressed    = false
+
+    ser_de_info {
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+    }
+
+    columns {
+      name = "store_id"
+      type = "string"
+    }
+
+    columns {
+      name = "address_line1"
+      type = "string"
+    }
+
+    columns {
+      name = "city"
+      type = "string"
+    }
+
+    columns {
+      name = "region"
+      type = "string"
+    }
+
+    columns {
+      name = "country_code"
+      type = "string"
+    }
+
+    columns {
+      name = "postal_code"
+      type = "string"
+    }
+
+    columns {
+      name = "retailer_name"
+      type = "string"
+    }
+
+    columns {
+      name = "parent_retailer_company_name"
+      type = "string"
+    }
+
+    columns {
+      name = "ingestion_datetime"
+      type = "string"
+    }
+  }
+
+  parameters = {
+    "table_type" = "ICEBERG"
+    "format-version" = "2"
+  }
+}
+
 /*
 
 resource "aws_db_instance" "quotes_generator" {
