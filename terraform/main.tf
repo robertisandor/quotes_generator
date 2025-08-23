@@ -437,6 +437,12 @@ resource "aws_glue_catalog_table" "store_locations" {
   }
 }
 
+resource "aws_s3_object" "store_locations_glue_table_creation_script" {
+  bucket = aws_s3_bucket.inflation_price_tracker.id
+  key    = "deployments/glue/scripts/store_locations_glue_table_creation.py"
+  source = "../glue_scripts/store_locations_glue_table_creation.py"
+}
+
 /*
 
 resource "aws_db_instance" "quotes_generator" {
