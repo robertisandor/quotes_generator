@@ -295,6 +295,75 @@ resource "aws_cloudwatch_log_group" "albertsons_store_location_webscraper_api" {
   retention_in_days = 0
 }
 
+data "archive_file" "target_store_location_transformer_lambda" {
+  type        = "zip"
+  source_dir  = "../ingestion/target_store_location_transformer_package"
+  output_path = "target_store_location_transformer_package.zip"
+}
+
+resource "aws_lambda_function" "target_store_location_transformer" {
+  filename          = "target_store_location_transformer_package.zip"
+  function_name     = "target_store_location_transformer"
+  role              = aws_iam_role.target_store_location_transformer_role.arn 
+  handler           = "target_store_location_transformer.lambda_handler"
+  timeout           = 600
+  memory_size       = 1024
+  architectures     = ["x86_64"]
+
+  source_code_hash  = data.archive_file.lambda.output_base64sha256
+  runtime           = "python3.13"
+}
+
+resource "aws_iam_role" "target_store_location_transformer" {
+  name               = "target_store_location_transformer"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+
+  inline_policy {
+    name = "lambda_basic_execution_role"
+
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": "logs:CreateLogGroup",
+              "Resource": "arn:aws:logs:us-east-2:487577641151:*"
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+              ],
+              "Resource": [
+                  "arn:aws:logs:us-east-2:487577641151:log-group:/aws/lambda/target_store_location_transformer:*"
+              ]
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*",
+                "s3-object-lambda:*"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "kms:*",
+            ],
+            "Resource": "*"
+          }
+      ]
+    })
+  }
+}
+
+resource "aws_cloudwatch_log_group" "target_store_location_transformer" {
+  name = "/aws/lambda/target_store_location_transformer"
+  retention_in_days = 0
+}
+
 /*
 
 resource "aws_db_instance" "quotes_generator" {
