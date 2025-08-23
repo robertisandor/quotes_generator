@@ -443,6 +443,62 @@ resource "aws_s3_object" "store_locations_glue_table_creation_script" {
   source = "../ingestion/glue_scripts/store_locations_glue_table_creation.py"
 }
 
+resource "aws_glue_job" "store_location_glue_table_creation" {
+  name              = "store_location_glue_table_creation"
+  description       = "Glue job to create the store_locations Glue table"
+  role_arn          = aws_iam_role.store_location_glue_table_creation_role.arn
+  glue_version      = "5.0"
+  max_retries       = 0
+  timeout           = 600
+  number_of_workers = 2
+  worker_type       = "G.1X"
+  execution_class   = "STANDARD"
+
+  command {
+    script_location = "s3://${aws_s3_bucket.inflation-price-tracker.bucket}/${aws_s3_object.store_locations_glue_table_creation_script}"
+    name            = "glueetl"
+    python_version  = "3"
+  }
+
+  notification_property {
+    notify_delay_after = 3 # delay in minutes
+  }
+
+  default_arguments = {
+    "--enable-metrics"                   = "true"
+    "--enable-spark-ui"                  = "true"
+    "--spark-event-logs-path"            = "s3://aws-glue-assets-487577641151-us-east-2/sparkHistoryLogs/"
+    "--enable-job-insights"              = "true"
+    "--enable-observability-metrics"     = "true"
+    "--enable-glue-datacatalog"          = "true"
+    "--job-bookmark-option"              = "job-bookmark-disable"
+    "--job-language"                     = "python"
+    "--TempDir"                          = "s3://aws-glue-assets-487577641151-us-east-2/temporary/"
+    "--enable-auto-scaling"              = "true"
+  }
+
+  execution_property {
+    max_concurrent_runs = 1
+  }
+}
+
+resource "aws_iam_role" "store_location_glue_table_creation_role" {
+  name = "store_location_glue_table_creation_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "glue.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
 /*
 
 resource "aws_db_instance" "quotes_generator" {
