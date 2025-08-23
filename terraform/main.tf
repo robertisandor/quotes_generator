@@ -432,6 +432,8 @@ resource "aws_glue_catalog_table" "store_locations" {
   parameters = {
     "table_type" = "ICEBERG"
     "format-version" = "2"
+    "metadata_location" = "s3://inflation-price-tracker-production/ingestion/transformed/target/country%3DUS/target_stores.parquet/metadata/00001-aaa30fb6-bde8-421c-9c3c-6bab64b5cbed.metadata.json"
+    "previous_metadata_location" = "s3://inflation-price-tracker-production/ingestion/transformed/target/country%3DUS/target_stores.parquet/metadata/00000-27946246-0315-4638-b7bc-563f793b5a01.metadata.json"
   }
 }
 
