@@ -370,10 +370,10 @@ resource "aws_s3_object" "store_locations_glue_table_creation_script" {
   source = "../ingestion/glue_scripts/store_locations_s3_table_creation.py"
 }
 
-resource "aws_glue_job" "store_location_glue_table_creation" {
-  name              = "store_location_glue_table_creation"
-  description       = "Glue job to create the store_locations Glue table"
-  role_arn          = aws_iam_role.store_location_glue_table_creation_role.arn
+resource "aws_glue_job" "store_location_s3_table_creation" {
+  name              = "store_location_s3_table_creation"
+  description       = "Glue job to create the store_location S3 table"
+  role_arn          = aws_iam_role.store_location_s3_table_creation_role.arn
   glue_version      = "5.0"
   max_retries       = 0
   timeout           = 600
@@ -382,7 +382,7 @@ resource "aws_glue_job" "store_location_glue_table_creation" {
   execution_class   = "STANDARD"
 
   command {
-    script_location = "s3://${aws_s3_bucket.inflation-price-tracker.bucket}/${aws_s3_object.store_locations_glue_table_creation_script.key}"
+    script_location = "s3://${aws_s3_bucket.inflation-price-tracker.bucket}/${aws_s3_object.store_locations_s3_table_creation_script.key}"
     name            = "glueetl"
     python_version  = "3"
   }
@@ -409,8 +409,8 @@ resource "aws_glue_job" "store_location_glue_table_creation" {
   }
 }
 
-resource "aws_iam_role" "store_location_glue_table_creation_role" {
-  name = "store_location_glue_table_creation_role"
+resource "aws_iam_role" "store_location_s3_table_creation_role" {
+  name = "store_location_s3_table_creation_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -424,6 +424,31 @@ resource "aws_iam_role" "store_location_glue_table_creation_role" {
       }
     ]
   })
+
+  inline_policy {
+    name = "glue_etl_job_execution_role"
+
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*",
+                "s3-object-lambda:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3tables:*"
+            ],
+            "Resource": "*"
+        }
+      ]
+    })
+  }
 }
 
 /*
