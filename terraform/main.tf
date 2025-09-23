@@ -457,7 +457,7 @@ resource "aws_iam_role" "store_location_s3_table_creation_role" {
 }
 
 resource "aws_s3tables_table_bucket" "iceberg_tables_bucket" {
-  bucket = "iceberg-tables"
+  name = "iceberg-tables"
   region = "us-east-2"
 }
 
