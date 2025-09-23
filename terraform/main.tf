@@ -445,6 +445,11 @@ resource "aws_iam_role" "store_location_s3_table_creation_role" {
                 "s3tables:*"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "*"
         }
       ]
     })
