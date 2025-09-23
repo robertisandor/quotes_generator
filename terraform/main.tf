@@ -364,7 +364,7 @@ resource "aws_cloudwatch_log_group" "target_store_location_transformer" {
   retention_in_days = 0
 }
 
-resource "aws_s3_object" "store_locations_glue_table_creation_script" {
+resource "aws_s3_object" "store_locations_s3_table_creation_script" {
   bucket = aws_s3_bucket.inflation-price-tracker.id
   key    = "deployments/glue/scripts/store_locations_s3_table_creation.py"
   source = "../ingestion/glue_scripts/store_locations_s3_table_creation.py"
