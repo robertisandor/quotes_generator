@@ -1,5 +1,6 @@
 
 import boto3 
+from datetime import datetime
 import io
 import json 
 import pyarrow as pa
@@ -47,9 +48,25 @@ def lambda_handler(event, context):
         'parent_retailer_company_name': [],
         'ingestion_datetime': []
     }
+
+    schema = pa.schema([
+        pa.field('store_id', pa.int64()),
+        pa.field('address_line1', pa.string()),
+        pa.field('city', pa.string()),
+        pa.field('region', pa.string()),
+        pa.field('country_code', pa.string()),
+        pa.field('postal_code', pa.string()),
+        pa.field('retailer_name', pa.string()),
+        pa.field('parent_retailer_company_name', pa.string()),
+        pa.field('ingestion_datetime', pa.timestamp('ms', tz='UTC'))
+    ])
+    print(f'schema: {schema}')
+
     counter = 0
     for store_id in stores.keys():
-        stores_output['store_id'].append(store_id)
+        ingestion_datetime = datetime.strptime(stores[store_id]['ingestion_datetime'], '%Y-%m-%dT%H:%M:%S.%f')
+
+        stores_output['store_id'].append(int(store_id))
         stores_output['address_line1'].append(stores[store_id]['mailing_address']['address_line1'])
         stores_output['city'].append(stores[store_id]['mailing_address']['city'])
         stores_output['region'].append(stores[store_id]['mailing_address']['region'])
@@ -57,20 +74,21 @@ def lambda_handler(event, context):
         stores_output['postal_code'].append(stores[store_id]['mailing_address']['postal_code'])
         stores_output['retailer_name'].append('Target')
         stores_output['parent_retailer_company_name'].append('Target')
-        stores_output['ingestion_datetime'].append(stores[store_id]['ingestion_datetime'])
+        stores_output['ingestion_datetime'].append(ingestion_datetime)
         counter += 1
         if counter % 100 == 0:
             print(f'Finished transforming data for store with store_id: {store_id}.')
             
     print("Finished transforming stores data.")
 
-    target_stores_table = pa.Table.from_pydict(stores_output)
+    target_stores_table = pa.Table.from_pydict(stores_output, schema)
+    print(f'target_stores_table.schema: {target_stores_table.schema}')
     print(f'Created table of {len(stores.keys())} stores info.')
     parquet_buffer = io.BytesIO()
     pq.write_table(target_stores_table, parquet_buffer)
     parquet_buffer.seek(0)
-    print(f'Wrpte table to parquet buffer.')
+    print(f'Wrote table to parquet buffer.')
     stores_s3_output_filepath = s3_key_output_prefix + f'target_stores.parquet'
-    print(f'Writing {len(stores_output)} stores info to {stores_s3_output_filepath} now.')
+    print(f'Writing {len(stores_output["store_id"])} stores info to {stores_s3_output_filepath} now.')
     s3.put_object(Body=parquet_buffer, Bucket=s3_bucket_name, Key=stores_s3_output_filepath)
     print(f'Successfully wrote to {stores_s3_output_filepath}.')
