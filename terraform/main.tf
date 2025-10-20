@@ -368,6 +368,10 @@ resource "aws_glue_catalog_database" "inflation_price_tracker_db" {
   name = "inflation_price_tracker_db"
 }
 
+resource "aws_glue_catalog_database" "inflation_price_tracker_iceberg_db" {
+  name = "inflation_price_tracker_iceberg_db"
+}
+
 resource "aws_glue_crawler" "prices_table_crawler" {
   database_name = aws_glue_catalog_database.inflation_price_tracker_db.name
   name = "prices_table_crawler"
