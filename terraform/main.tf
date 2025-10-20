@@ -378,7 +378,7 @@ resource "aws_glue_crawler" "prices_table_crawler" {
   }
 }
 
-resource "aws_iam_role" "prices_s3_table_creation_role" {
+resource "aws_iam_role" "prices_glue_table_creation_role" {
   name = "prices_glue_table_creation_role"
 
   assume_role_policy = jsonencode({
