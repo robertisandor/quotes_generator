@@ -369,7 +369,7 @@ resource "aws_glue_catalog_database" "inflation_price_tracker_db" {
 }
 
 resource "aws_glue_crawler" "prices_table_crawler" {
-  database_name = aws_glue_catalog_database.inflation_price_tracker_db
+  database_name = aws_glue_catalog_database.inflation_price_tracker_db.name
   name = "prices_table_crawler"
   role = aws_iam_role.prices_glue_table_creation_role.arn
 
