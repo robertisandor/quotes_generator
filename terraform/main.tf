@@ -366,7 +366,7 @@ resource "aws_cloudwatch_log_group" "target_store_location_transformer" {
 
 data "archive_file" "target_products_transformer_lambda" {
   type        = "zip"
-  source_dir  = "../ingestion/target_product_transformer_package"
+  source_dir  = "../ingestion/target_product_transformer"
   output_path = "target_product_transformer_package.zip"
 }
 
@@ -435,7 +435,7 @@ resource "aws_cloudwatch_log_group" "target_product_transformer" {
 
 data "archive_file" "target_prices_transformer_lambda" {
   type        = "zip"
-  source_dir  = "../ingestion/target_prices_transformer_package"
+  source_dir  = "../ingestion/target_prices_transformer"
   output_path = "target_prices_transformer_package.zip"
 }
 
