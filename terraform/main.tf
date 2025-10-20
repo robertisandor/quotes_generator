@@ -382,8 +382,58 @@ resource "aws_glue_crawler" "prices_table_crawler" {
   }
 }
 
+resource "aws_glue_crawler" "products_table_crawler" {
+  database_name = aws_glue_catalog_database.inflation_price_tracker_db.name
+  name = "products_table_crawler"
+  role = aws_iam_role.products_glue_table_creation_role.arn
+
+  s3_target {
+    path = "s3://inflation-price-tracker-production/ingestion/transformed/products/"
+  }
+}
+
 resource "aws_iam_role" "prices_glue_table_creation_role" {
   name = "prices_glue_table_creation_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "glue.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  inline_policy {
+    name = "glue_etl_job_execution_role"
+
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*",
+                "s3-object-lambda:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "*"
+        }
+      ]
+    })
+  }
+}
+
+resource "aws_iam_role" "products_glue_table_creation_role" {
+  name = "products_glue_table_creation_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
