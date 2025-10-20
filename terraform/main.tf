@@ -364,53 +364,22 @@ resource "aws_cloudwatch_log_group" "target_store_location_transformer" {
   retention_in_days = 0
 }
 
-resource "aws_s3_object" "store_locations_s3_table_creation_script" {
-  bucket = aws_s3_bucket.inflation-price-tracker.id
-  key    = "deployments/glue/scripts/store_locations_s3_table_creation.py"
-  source = "../ingestion/glue_scripts/store_locations_s3_table_creation.py"
+resource "aws_glue_catalog_database" "inflation_price_tracker_db" {
+  name = "inflation_price_tracker_db"
 }
 
-resource "aws_glue_job" "store_location_s3_table_creation" {
-  name              = "store_location_s3_table_creation"
-  description       = "Glue job to create the store_location S3 table"
-  role_arn          = aws_iam_role.store_location_s3_table_creation_role.arn
-  glue_version      = "5.0"
-  max_retries       = 0
-  timeout           = 600
-  number_of_workers = 2
-  worker_type       = "G.1X"
-  execution_class   = "STANDARD"
+resource "aws_glue_crawler" "prices_table_crawler" {
+  database_name = aws_glue_catalog_database.inflation_price_tracker_db
+  name = "prices_table_crawler"
+  role = aws_iam_role.prices_glue_table_creation_role.arn
 
-  command {
-    script_location = "s3://${aws_s3_bucket.inflation-price-tracker.bucket}/${aws_s3_object.store_locations_s3_table_creation_script.key}"
-    name            = "glueetl"
-    python_version  = "3"
-  }
-
-  notification_property {
-    notify_delay_after = 3 # delay in minutes
-  }
-
-  default_arguments = {
-    "--enable-metrics"                   = "true"
-    "--enable-spark-ui"                  = "true"
-    "--spark-event-logs-path"            = "s3://aws-glue-assets-487577641151-us-east-2/sparkHistoryLogs/"
-    "--enable-job-insights"              = "true"
-    "--enable-observability-metrics"     = "true"
-    "--enable-glue-datacatalog"          = "true"
-    "--job-bookmark-option"              = "job-bookmark-disable"
-    "--job-language"                     = "python"
-    "--TempDir"                          = "s3://aws-glue-assets-487577641151-us-east-2/temporary/"
-    "--enable-auto-scaling"              = "true"
-  }
-
-  execution_property {
-    max_concurrent_runs = 1
+  s3_target {
+    path = "s3://inflation-price-tracker-production/ingestion/transformed/prices/"
   }
 }
 
-resource "aws_iam_role" "store_location_s3_table_creation_role" {
-  name = "store_location_s3_table_creation_role"
+resource "aws_iam_role" "prices_s3_table_creation_role" {
+  name = "prices_glue_table_creation_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -441,24 +410,12 @@ resource "aws_iam_role" "store_location_s3_table_creation_role" {
         },
         {
             "Effect": "Allow",
-            "Action": [
-                "s3tables:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
             "Action": "*",
             "Resource": "*"
         }
       ]
     })
   }
-}
-
-resource "aws_s3tables_table_bucket" "iceberg_tables_bucket" {
-  name = "iceberg-tables"
-  region = "us-east-2"
 }
 
 /*
