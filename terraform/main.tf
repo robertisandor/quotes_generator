@@ -371,7 +371,7 @@ data "archive_file" "target_products_transformer_lambda" {
 }
 
 resource "aws_s3_bucket_object" "target_product_transformer_lambda_deployment_package" {
-  bucket = aws_s3_bucket.inflation-price-tracker.name
+  bucket = aws_s3_bucket.inflation-price-tracker.bucket
   key    = "deployment/lambdas/target_product_transformer_package.zip"
   source = "target_product_transformer_package.zip"
 }
@@ -385,7 +385,7 @@ resource "aws_lambda_function" "target_product_transformer" {
   memory_size       = 1024
   architectures     = ["x86_64"]
 
-  s3_bucket         = aws_s3_bucket.inflation-price-tracker.name
+  s3_bucket         = aws_s3_bucket.inflation-price-tracker.bucket
   s3_key            = aws_s3_bucket_object.target_product_transformer_lambda_deployment_package.key
   runtime           = "python3.10"
 }
@@ -447,7 +447,7 @@ data "archive_file" "target_prices_transformer_lambda" {
 }
 
 resource "aws_s3_bucket_object" "target_prices_transformer_lambda_deployment_package" {
-  bucket = aws_s3_bucket.inflation-price-tracker.name
+  bucket = aws_s3_bucket.inflation-price-tracker.bucket
   key    = "deployment/lambdas/target_prices_transformer_package.zip"
   source = "target_prices_transformer_package.zip"
 }
@@ -460,7 +460,7 @@ resource "aws_lambda_function" "target_prices_transformer" {
   timeout           = 600
   memory_size       = 1024
   architectures     = ["x86_64"]
-  s3_bucket         = aws_s3_bucket.inflation-price-tracker.name
+  s3_bucket         = aws_s3_bucket.inflation-price-tracker.bucket
   s3_key            = aws_s3_bucket_object.target_prices_transformer_lambda_deployment_package.key
   runtime           = "python3.10"
 }
