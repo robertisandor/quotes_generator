@@ -83,7 +83,7 @@ data "archive_file" "target_prices_webscraper_lambda" {
 
 resource "aws_s3_bucket_object" "target_prices_webscraper_lambda_deployment_package" {
   bucket = aws_s3_bucket.inflation-price-tracker.bucket
-  key    = "deployment/lambdas/target_prices_webscraper_package.zip"
+  key    = "deployments/lambdas/target_prices_webscraper_package.zip"
   source = "target_prices_webscraper_deployment_package.zip"
 }
 
@@ -170,7 +170,7 @@ data "archive_file" "target_store_location_webscraper_lambda" {
 
 resource "aws_s3_bucket_object" "target_store_location_webscraper_lambda_deployment_package" {
   bucket = aws_s3_bucket.inflation-price-tracker.bucket
-  key    = "deployment/lambdas/target_store_location_webscraper_package.zip"
+  key    = "deployments/lambdas/target_store_location_webscraper_package.zip"
   source = "target_store_location_webscraper_package.zip"
 }
 
@@ -244,7 +244,7 @@ data "archive_file" "albertsons_store_location_webscraper_lambda" {
 
 resource "aws_s3_bucket_object" "albertsons_store_location_webscraper_lambda_deployment_package" {
   bucket = aws_s3_bucket.inflation-price-tracker.bucket
-  key    = "deployment/lambdas/albertsons_store_location_webscraper_package.zip"
+  key    = "deployments/lambdas/albertsons_store_location_webscraper_package.zip"
   source = "albertsons_store_location_webscraper_package.zip"
 }
 
@@ -318,7 +318,7 @@ data "archive_file" "target_store_location_transformer_lambda" {
 
 resource "aws_s3_bucket_object" "target_store_location_transformer_lambda_deployment_package" {
   bucket = aws_s3_bucket.inflation-price-tracker.bucket
-  key    = "deployment/lambdas/target_store_location_transformer_package.zip"
+  key    = "deployments/lambdas/target_store_location_transformer_package.zip"
   source = "target_store_location_transformer_package.zip"
 }
 
@@ -392,7 +392,7 @@ data "archive_file" "target_products_transformer_lambda" {
 
 resource "aws_s3_bucket_object" "target_product_transformer_lambda_deployment_package" {
   bucket = aws_s3_bucket.inflation-price-tracker.bucket
-  key    = "deployment/lambdas/target_product_transformer_package.zip"
+  key    = "deployments/lambdas/target_product_transformer_package.zip"
   source = "target_product_transformer_package.zip"
 }
 
@@ -467,7 +467,7 @@ data "archive_file" "target_prices_transformer_lambda" {
 
 resource "aws_s3_bucket_object" "target_prices_transformer_lambda_deployment_package" {
   bucket = aws_s3_bucket.inflation-price-tracker.bucket
-  key    = "deployment/lambdas/target_prices_transformer_package.zip"
+  key    = "deployments/lambdas/target_prices_transformer_package.zip"
   source = "target_prices_transformer_package.zip"
 }
 
