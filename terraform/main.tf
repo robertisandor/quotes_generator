@@ -370,6 +370,12 @@ data "archive_file" "target_products_transformer_lambda" {
   output_path = "target_product_transformer_package.zip"
 }
 
+resource "aws_s3_bucket_object" "target_product_transformer_lambda_deployment_package" {
+  bucket = aws_s3_bucket.inflation-price-tracker
+  key    = "deployment/lambdas/target_product_transformer_package.zip"
+  source = "target_product_transformer_package.zip"
+}
+
 resource "aws_lambda_function" "target_product_transformer" {
   filename          = "target_product_transformer_package.zip"
   function_name     = "target_product_transformer"
@@ -379,7 +385,8 @@ resource "aws_lambda_function" "target_product_transformer" {
   memory_size       = 1024
   architectures     = ["x86_64"]
 
-  source_code_hash  = data.archive_file.target_products_transformer_lambda.output_base64sha256
+  s3_bucket         = aws_s3_bucket.inflation-price-tracker
+  s3_key            = aws_s3_bucket_object.target_product_transformer_lambda_deployment_package.key
   runtime           = "python3.10"
 }
 
@@ -439,6 +446,12 @@ data "archive_file" "target_prices_transformer_lambda" {
   output_path = "target_prices_transformer_package.zip"
 }
 
+resource "aws_s3_bucket_object" "target_prices_transformer_lambda_deployment_package" {
+  bucket = aws_s3_bucket.inflation-price-tracker
+  key    = "deployment/lambdas/target_prices_transformer_package.zip"
+  source = "target_prices_transformer_package.zip"
+}
+
 resource "aws_lambda_function" "target_prices_transformer" {
   filename          = "target_prices_transformer_package.zip"
   function_name     = "target_prices_transformer"
@@ -447,8 +460,8 @@ resource "aws_lambda_function" "target_prices_transformer" {
   timeout           = 600
   memory_size       = 1024
   architectures     = ["x86_64"]
-
-  source_code_hash  = data.archive_file.target_prices_transformer_lambda.output_base64sha256
+  s3_bucket         = aws_s3_bucket.inflation-price-tracker
+  s3_key            = aws_s3_bucket_object.target_prices_transformer_lambda_deployment_package.key
   runtime           = "python3.10"
 }
 
