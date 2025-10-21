@@ -75,22 +75,27 @@ resource "aws_kms_alias" "key-alias" {
   target_key_id = aws_kms_key.inflation-price-tracker-production-terraform-bucket-key.key_id
 }
 
-data "archive_file" "lambda" {
+data "archive_file" "target_prices_webscraper_lambda" {
   type        = "zip"
   source_dir  = "../ingestion/package"
-  output_path = "target_webscraper_deployment_package.zip"
+  output_path = "target_prices_webscraper_deployment_package.zip"
 }
 
-resource "aws_lambda_function" "target_webscraper" {
-  filename          = "target_webscraper_deployment_package.zip"
-  function_name     = "target_webscraper_api"
+resource "aws_s3_bucket_object" "target_prices_webscraper_lambda_deployment_package" {
+  bucket = aws_s3_bucket.inflation-price-tracker.bucket
+  key    = "deployment/lambdas/target_prices_webscraper_package.zip"
+  source = "target_prices_webscraper_deployment_package.zip"
+}
+
+resource "aws_lambda_function" "target_prices_webscraper" {
+  function_name     = "target_prices_webscraper"
   role              = aws_iam_role.target_webscraper_role.arn 
   handler           = "target_webscraper.lambda_handler"
   timeout           = 600
   memory_size       = 128
   architectures     = ["x86_64"]
-
-  source_code_hash  = data.archive_file.lambda.output_base64sha256
+  s3_bucket         = aws_s3_bucket.inflation-price-tracker.bucket
+  s3_key            = aws_s3_bucket_object.target_prices_webscraper_lambda_deployment_package.key  
   runtime           = "python3.10"
 }
 
@@ -163,16 +168,21 @@ data "archive_file" "target_store_location_webscraper_lambda" {
   output_path = "target_store_location_webscraper_package.zip"
 }
 
+resource "aws_s3_bucket_object" "target_store_location_webscraper_lambda_deployment_package" {
+  bucket = aws_s3_bucket.inflation-price-tracker.bucket
+  key    = "deployment/lambdas/target_store_location_webscraper_package.zip"
+  source = "target_store_location_webscraper_package.zip"
+}
+
 resource "aws_lambda_function" "target_store_location_webscraper" {
-  filename          = "target_store_location_webscraper_package.zip"
   function_name     = "target_store_location_webscraper_api"
   role              = aws_iam_role.target_store_location_webscraper_role.arn 
   handler           = "target_store_location_webscraper.lambda_handler"
   timeout           = 600
   memory_size       = 512
   architectures     = ["x86_64"]
-
-  source_code_hash  = data.archive_file.lambda.output_base64sha256
+  s3_bucket         = aws_s3_bucket.inflation-price-tracker.bucket
+  s3_key            = aws_s3_bucket_object.target_store_location_webscraper_lambda_deployment_package.key
   runtime           = "python3.10"
 }
 
@@ -232,16 +242,21 @@ data "archive_file" "albertsons_store_location_webscraper_lambda" {
   output_path = "albertsons_store_location_webscraper_package.zip"
 }
 
+resource "aws_s3_bucket_object" "albertsons_store_location_webscraper_lambda_deployment_package" {
+  bucket = aws_s3_bucket.inflation-price-tracker.bucket
+  key    = "deployment/lambdas/albertsons_store_location_webscraper_package.zip"
+  source = "albertsons_store_location_webscraper_package.zip"
+}
+
 resource "aws_lambda_function" "albertsons_store_location_webscraper" {
-  filename          = "albertsons_store_location_webscraper_package.zip"
   function_name     = "albertsons_store_location_webscraper_api"
   role              = aws_iam_role.albertsons_store_location_webscraper_role.arn 
   handler           = "albertsons_store_location_webscraper.lambda_handler"
   timeout           = 600
   memory_size       = 128
   architectures     = ["x86_64"]
-
-  source_code_hash  = data.archive_file.lambda.output_base64sha256
+  s3_bucket         = aws_s3_bucket.inflation-price-tracker.bucket
+  s3_key            = aws_s3_bucket_object.albertsons_store_location_webscraper_lambda_deployment_package.key
   runtime           = "python3.10"
 }
 
@@ -301,16 +316,21 @@ data "archive_file" "target_store_location_transformer_lambda" {
   output_path = "target_store_location_transformer_package.zip"
 }
 
+resource "aws_s3_bucket_object" "target_store_location_transformer_lambda_deployment_package" {
+  bucket = aws_s3_bucket.inflation-price-tracker.bucket
+  key    = "deployment/lambdas/target_store_location_transformer_package.zip"
+  source = "target_store_location_transformer_package.zip"
+}
+
 resource "aws_lambda_function" "target_store_location_transformer" {
-  filename          = "target_store_location_transformer_package.zip"
   function_name     = "target_store_location_transformer"
   role              = aws_iam_role.target_store_location_transformer_role.arn 
   handler           = "target_store_location_transformer.lambda_handler"
   timeout           = 600
   memory_size       = 1024
   architectures     = ["x86_64"]
-
-  source_code_hash  = data.archive_file.lambda.output_base64sha256
+  s3_bucket         = aws_s3_bucket.inflation-price-tracker.bucket
+  s3_key            = aws_s3_bucket_object.target_store_location_transformer_lambda_deployment_package.key
   runtime           = "python3.10"
 }
 
