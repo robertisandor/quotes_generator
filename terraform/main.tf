@@ -377,7 +377,6 @@ resource "aws_s3_bucket_object" "target_product_transformer_lambda_deployment_pa
 }
 
 resource "aws_lambda_function" "target_product_transformer" {
-  filename          = "target_product_transformer_package.zip"
   function_name     = "target_product_transformer"
   role              = aws_iam_role.target_product_transformer_role.arn 
   handler           = "target_product_transformer.lambda_handler"
@@ -453,7 +452,6 @@ resource "aws_s3_bucket_object" "target_prices_transformer_lambda_deployment_pac
 }
 
 resource "aws_lambda_function" "target_prices_transformer" {
-  filename          = "target_prices_transformer_package.zip"
   function_name     = "target_prices_transformer"
   role              = aws_iam_role.target_prices_transformer_role.arn 
   handler           = "target_prices_transformer.lambda_handler"
