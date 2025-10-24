@@ -77,7 +77,7 @@ resource "aws_kms_alias" "key-alias" {
 
 data "archive_file" "target_prices_webscraper_lambda" {
   type        = "zip"
-  source_dir  = "../ingestion/package"
+  source_dir  = "../ingestion/target_prices_webscraper"
   output_path = "target_prices_webscraper_deployment_package.zip"
 }
 
@@ -386,7 +386,7 @@ resource "aws_cloudwatch_log_group" "target_store_location_transformer" {
 
 data "archive_file" "target_product_webscraper_lambda" {
   type        = "zip"
-  source_dir  = "../ingestion/target_product_webscraper"
+  source_dir  = "../ingestion/target_product_webscraper_package"
   output_path = "target_product_webscraper_package.zip"
 }
 
