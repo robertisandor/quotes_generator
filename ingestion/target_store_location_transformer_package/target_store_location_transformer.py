@@ -14,7 +14,7 @@ def lambda_handler(event, context):
 
     stores = {}
     s3_key_input_prefix = f'ingestion/raw/locations/country=US/'
-    s3_key_output_prefix = f'ingestion/transformed/target/country=US/'
+    s3_key_output_prefix = f'ingestion/transformed/locations/country=US/'
     existing_locations_response = s3.list_objects_v2(Bucket=s3_bucket_name, Prefix=s3_key_input_prefix)
     target_stores_data = None
     target_stores_json = None
