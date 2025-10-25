@@ -551,7 +551,7 @@ resource "aws_lambda_function" "target_prices_transformer" {
   role              = aws_iam_role.target_prices_transformer_role.arn 
   handler           = "target_prices_transformer.lambda_handler"
   timeout           = 600
-  memory_size       = 1024
+  memory_size       = 2048
   architectures     = ["x86_64"]
   s3_bucket         = aws_s3_bucket.inflation-price-tracker.bucket
   s3_key            = aws_s3_bucket_object.target_prices_transformer_lambda_deployment_package.key
