@@ -121,7 +121,7 @@ resource "aws_iam_role" "target_webscraper_role" {
                   "logs:PutLogEvents"
               ],
               "Resource": [
-                  "arn:aws:logs:us-east-2:487577641151:log-group:/aws/lambda/target_webscraper_api:*"
+                  "arn:aws:logs:us-east-2:487577641151:log-group:/aws/lambda/target_prices_webscraper:*"
               ]
           },
           {
@@ -157,8 +157,8 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "target_webscraper_api" {
-  name = "/aws/lambda/target_webscraper_api"
+resource "aws_cloudwatch_log_group" "target_prices_webscraper" {
+  name = "/aws/lambda/target_prices_webscraper"
   retention_in_days = 0
 }
 
