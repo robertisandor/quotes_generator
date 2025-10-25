@@ -92,7 +92,7 @@ resource "aws_lambda_function" "target_prices_webscraper" {
   role              = aws_iam_role.target_webscraper_role.arn 
   handler           = "target_webscraper.lambda_handler"
   timeout           = 600
-  memory_size       = 512
+  memory_size       = 2048
   architectures     = ["x86_64"]
   s3_bucket         = aws_s3_bucket.inflation-price-tracker.bucket
   s3_key            = aws_s3_bucket_object.target_prices_webscraper_lambda_deployment_package.key  
