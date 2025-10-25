@@ -30,10 +30,33 @@ def lambda_handler(event, context):
     s3 = boto3.client('s3')
 
     # read existing Target stores file
+    # stores = {}
+    # stores_s3_filepath = f'ingestion/raw/locations/country=US/target_stores.json'
+    # target_stores_data = s3.get_object(Bucket=s3_bucket_name, Key=stores_s3_filepath)
+    # target_stores_json = target_stores_data['Body'].readlines()
     stores = {}
-    stores_s3_filepath = f'ingestion/raw/year={ingestion_datetime.year}/month={ingestion_datetime.month}/day=1/country=US/target_stores.json'
-    target_stores_data = s3.get_object(Bucket=s3_bucket_name, Key=stores_s3_filepath)
-    target_stores_json = target_stores_data['Body'].readlines()
+    s3_key_prefix = f'ingestion/raw/locations/country=US/'
+    existing_locations_response = s3.list_objects_v2(Bucket=s3_bucket_name, Prefix=s3_key_prefix)
+    target_stores_data = None
+    target_stores_json = None
+    if existing_locations_response['KeyCount'] > 0:
+        target_locations_files = sorted([file['Key'] for file in existing_locations_response['Contents'] if 'target' in file['Key']])
+        if len(target_locations_files) > 0:
+            latest_target_locations_file = target_locations_files[-1]
+            print(f'Found existing target locations file {latest_target_locations_file} in {s3_bucket_name} under {s3_key_prefix}.')
+            target_stores_data = s3.get_object(Bucket=s3_bucket_name, Key=latest_target_locations_file)
+            print(f'Read data from existing target locations file {latest_target_locations_file} in {s3_bucket_name} under {s3_key_prefix}.')
+            target_stores_json = target_stores_data['Body'].readlines()
+        else: 
+            print(f'No existing target locations data found in {s3_bucket_name} under {s3_key_prefix}. Please investigate.')
+    else:
+        print(f'No existing target locations data found in {s3_bucket_name} under {s3_key_prefix}. Please investigate.')
+
+    if target_stores_json is not None:
+        stores = json.loads(target_stores_json[0])
+        print(f'Read {len(stores.keys())} stores info.')
+    else:
+        print('No existing target stores data found.')
 
     for store_dict in json.loads(target_stores_json[0]):
         stores.update(store_dict)
