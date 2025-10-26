@@ -58,9 +58,9 @@ def lambda_handler(event, context):
     else:
         print('No existing target stores data found.')
 
-    for store_dict in json.loads(target_stores_json[0]):
-        stores.update(store_dict)
-    print(f'Number of stores: {len(list(stores.keys()))}')
+    # for store_dict in json.loads(target_stores_json[0]):
+    #     stores.update(store_dict)
+    # print(f'Number of stores: {len(list(stores.keys()))}')
 
     uploaded_states = set()
     existing_states_response = s3.list_objects_v2(Bucket=s3_bucket_name, Prefix=s3_key_prefix)
