@@ -6,7 +6,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     ca-certificates=20240203~22.04.1 \
     build-essential=12.9ubuntu3 \
-    curl=7.81.0-1ubuntu1.20 \
+    curl=7.81.0-1ubuntu1.21 \
     pkg-config=0.29.2-1ubuntu3 \
     libssl-dev\
     postgresql-14 \
@@ -33,7 +33,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libpq-dev \
     ca-certificates=20240203~22.04.1 \
-    curl=7.81.0-1ubuntu1.20 \
+    curl=7.81.0-1ubuntu1.21 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 EXPOSE 8000
