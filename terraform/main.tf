@@ -771,7 +771,7 @@ resource "aws_db_instance" "travel_homie" {
   instance_class         = "db.t3.micro"
   allocated_storage      = 5
   engine                 = "postgres"
-  engine_version         = "15.7"
+  engine_version         = "15.14"
   db_name                = "travel_homie_db"
   username               = "postgres"
   password               = var.db_password
