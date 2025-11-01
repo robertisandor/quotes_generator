@@ -766,6 +766,178 @@ resource "aws_iam_role" "locations_glue_table_creation_role" {
   }
 }
 
+resource "aws_db_instance" "travel_homie" {
+  identifier             = "travel-homie"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 5
+  engine                 = "postgres"
+  engine_version         = "15.7"
+  db_name                = "travel_homie_db"
+  username               = "postgres"
+  password               = var.db_password
+  parameter_group_name   = aws_db_parameter_group.travel_homie.name
+  publicly_accessible    = false
+  skip_final_snapshot    = true
+  vpc_security_group_ids = [aws_security_group.rds_ec2_1.id] 
+  db_subnet_group_name   = aws_db_subnet_group.travel_homie_subnet_group.name
+}
+
+resource "aws_db_parameter_group" "travel_homie" {
+  name   = "travel-homie"
+  family = "postgres15"
+
+  parameter {
+    name  = "log_connections"
+    value = "1"
+  }
+
+  parameter {
+    name = "rds.force_ssl"
+    value = "0"
+  }
+}
+
+resource "aws_vpc" "travel_homie_main" {
+  cidr_block = "172.31.0.0/16"
+  instance_tenancy = "default"
+  enable_dns_support = true
+  enable_dns_hostnames = true 
+  enable_network_address_usage_metrics = false 
+}
+
+resource "aws_route_table" "travel_homie_route_table" {
+  vpc_id = aws_vpc.quotes_main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.travel_homie_gateway.id
+  }
+}
+
+resource "aws_internet_gateway" "travel_homie_gateway" {
+  vpc_id = aws_vpc.travel_homie_main.id
+}
+
+resource "aws_db_subnet_group" "travel_homie_subnet_group" {
+  name = "travel_homie_subnet_group"
+  subnet_ids = [aws_subnet.travel_homie_1.id, aws_subnet.travel_homie_2.id, aws_subnet.travel_homie_3.id]
+}
+
+resource "aws_route_table_association" "travel_homie_2" {
+  subnet_id      = aws_subnet.travel_homie_2.id
+  route_table_id = aws_route_table.travel_homie_route_table.id
+}
+
+resource "aws_route_table_association" "travel_homie_3" {
+  subnet_id      = aws_subnet.travel_homie_3.id
+  route_table_id = aws_route_table.travel_homie_route_table.id
+}
+
+resource "aws_subnet" "travel_homie_1" {
+  cidr_block        = "172.31.0.0/20"
+  vpc_id            = aws_vpc.travel_homie_main.id
+  availability_zone = "us-east-2a"
+}
+
+resource "aws_subnet" "travel_homie_2" {
+  cidr_block              = "172.31.16.0/20"
+  vpc_id                  = aws_vpc.travel_homie_main.id
+  availability_zone       = "us-east-2b"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "quotes_3" {
+  cidr_block              = "172.31.32.0/20"
+  vpc_id                  = aws_vpc.travel_homie_main.id
+  availability_zone       = "us-east-2c"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_vpc_dhcp_options" "travel_homie_dns_resolver" {
+  domain_name_servers  = ["AmazonProvidedDNS"]
+}
+
+resource "aws_network_acl" "main" {
+  vpc_id = aws_vpc.travel_homie_main.id
+  subnet_ids = [aws_subnet.travel_homie_1.id, aws_subnet.travel_homie_2.id, aws_subnet.travel_homie_3.id]
+
+  ingress {
+    protocol   = "-1"
+    rule_no    = 100
+    action     = "deny"
+    cidr_block = "0.0.0.0/0"    
+    from_port  = 0
+    to_port    = 0
+  }
+
+  ingress {
+    protocol   = "-1"
+    rule_no    = 1
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 0
+    to_port    = 0
+  }
+
+  egress {
+    protocol   = "-1"
+    rule_no    = 100
+    action     = "deny"
+    cidr_block = "0.0.0.0/0"    
+    from_port  = 0
+    to_port    = 0
+  }
+
+  egress {
+    protocol   = "-1"
+    rule_no    = 1
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 0
+    to_port    = 0
+  }
+}
+
+resource "aws_security_group" "rds_lambda_1" {
+  name        = "rds_lambda_1"
+  vpc_id      = aws_vpc.travel_homie_main.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv6" {
+  security_group_id = aws_security_group.rds_lambda_1.id
+  description       = "Rule to allow connections from Lambdas with sg attached"
+  cidr_ipv4         = aws_vpc.travel_homie_main.cidr_block
+  from_port         = 5432
+  ip_protocol       = "tcp"
+  to_port           = 5432
+}
+
+resource "aws_security_group" "lambda_rds_1" {
+  name        = "lambda_rds_1"
+  vpc_id      = aws_vpc.travel_homie_main.id
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
+  security_group_id = aws_security_group.lambda_rds_1.id
+  description       = "Rule to allow connections from Lambdas with sg attached"
+  cidr_ipv4         = aws_vpc.travel_homie_main.cidr_block
+  from_port         = 5432
+  ip_protocol       = "tcp"
+  to_port           = 5432
+}
+
+resource "aws_network_interface" "rds_network_interface" {
+  subnet_id       = aws_subnet.travel_homie_1.id
+  private_ips     = ["172.31.14.150"]
+  security_groups = [aws_security_group.rds_lambda_1.id]
+}
+
+resource "aws_network_interface" "lambda_network_interface" {
+  subnet_id       = aws_subnet.travel_homie_2.id
+  private_ips     = ["172.31.19.101"]
+  security_groups = [aws_security_group.lambda_rds_1.id]
+}
+
 /*
 
 resource "aws_db_instance" "quotes_generator" {
