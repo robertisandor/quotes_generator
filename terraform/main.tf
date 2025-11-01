@@ -806,7 +806,7 @@ resource "aws_vpc" "travel_homie_main" {
 }
 
 resource "aws_route_table" "travel_homie_route_table" {
-  vpc_id = aws_vpc.quotes_main.id
+  vpc_id = aws_vpc.travel_homie_main.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -846,7 +846,7 @@ resource "aws_subnet" "travel_homie_2" {
   map_public_ip_on_launch = true
 }
 
-resource "aws_subnet" "quotes_3" {
+resource "aws_subnet" "travel_homie_3" {
   cidr_block              = "172.31.32.0/20"
   vpc_id                  = aws_vpc.travel_homie_main.id
   availability_zone       = "us-east-2c"
