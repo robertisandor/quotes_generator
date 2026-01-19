@@ -950,6 +950,22 @@ resource "aws_s3_bucket_object" "travel_homie_get_user_lambda_deployment_package
   source = "travel_homie_get_user_lambda_deployment_package.zip"
 }
 
+resource "aws_db_instance" "travel_homie_tf_test" {
+  identifier             = "travel-homie-tf-test"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 5
+  engine                 = "postgres"
+  engine_version         = "15.14"
+  db_name                = "travel_homie_db"
+  username               = "postgres"
+  password               = var.db_password
+  parameter_group_name   = aws_db_parameter_group.travel_homie.name
+  publicly_accessible    = false
+  skip_final_snapshot    = true
+  vpc_security_group_ids = [aws_security_group.rds_lambda_1.id] 
+  db_subnet_group_name   = aws_db_subnet_group.travel_homie_subnet_group.name
+}
+
 resource "aws_lambda_function" "travel_homie_get_user_tf" {
   function_name     = "travel_homie_get_user_tf"
   role              = aws_iam_role.target_webscraper_role.arn 
