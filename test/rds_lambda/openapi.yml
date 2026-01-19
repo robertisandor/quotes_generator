@@ -1,0 +1,41 @@
+openapi: '3.1.1'
+info:
+  title: TravelHomie API
+  description: API for managing tours and bookings in TravelHomie application.
+  version: '1.0'
+paths:
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK
+  /users:
+    get:
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      responses:
+        '201':
+          description: User created
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          example: Fido
+        email:
+          type: string
+          example: example@gmail.com

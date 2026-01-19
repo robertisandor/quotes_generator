@@ -938,6 +938,135 @@ resource "aws_network_interface" "lambda_network_interface" {
   security_groups = [aws_security_group.lambda_rds_1.id]
 }
 
+data "archive_file" "travel_homie_get_user_lambda" {
+  type        = "zip"
+  source_dir  = "../test/rds_lambda"
+  output_path = "travel_homie_get_user_lambda_deployment_package.zip"
+}
+
+resource "aws_s3_bucket_object" "travel_homie_get_user_lambda_deployment_package" {
+  bucket = aws_s3_bucket.inflation-price-tracker.bucket
+  key    = "deployments/lambdas/travel_homie_get_user_lambda_deployment_package.zip"
+  source = "travel_homie_get_user_lambda_deployment_package.zip"
+}
+
+resource "aws_lambda_function" "travel_homie_get_user_tf" {
+  function_name     = "travel_homie_get_user_tf"
+  role              = aws_iam_role.target_webscraper_role.arn 
+  handler           = "query_postgres.lambda_handler"
+  timeout           = 30
+  memory_size       = 128
+  architectures     = ["x86_64"]
+  s3_bucket         = aws_s3_bucket.inflation-price-tracker.bucket
+  s3_key            = aws_s3_bucket_object.travel_homie_get_user_lambda_deployment_package.key
+  runtime           = "python3.10"
+}
+
+resource "aws_iam_role" "travel_homie_get_user_role" {
+  name               = "travel_homie_get_user_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+
+  inline_policy {
+    name = "lambda_basic_execution_role"
+
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": "logs:CreateLogGroup",
+              "Resource": "arn:aws:logs:us-east-2:487577641151:*"
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+              ],
+              "Resource": [
+                  "arn:aws:logs:us-east-2:487577641151:log-group:/aws/lambda/travel_homie_get_user:*"
+              ]
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeFunction"
+            ],
+            "Resource": "*"
+          }
+      ]
+    })
+  }
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_cloudwatch_log_group" "travel_homie_get_user" {
+  name = "/aws/lambda/travel_homie_get_user"
+  retention_in_days = 0
+}
+
+resource "aws_security_group" "rds_rdsproxy_tf" {
+  name        = "rds_rdsproxy_tf"
+  vpc_id      = aws_vpc.travel_homie_main.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_postgresql_rds_rdsproxy" {
+  security_group_id = aws_security_group.rds_rdsproxy_tf.id
+  description       = "Rule to allow connections from PostgreSQL RDS with sg attached"
+  cidr_ipv4         = aws_vpc.travel_homie_main.cidr_block
+  from_port         = 5432
+  ip_protocol       = "tcp"
+  to_port           = 5432
+}
+
+resource "aws_security_group" "rdsproxy_lambda_tf" {
+  name        = "rdsproxy_lambda_tf"
+  vpc_id      = aws_vpc.travel_homie_main.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_postgresql_rdsproxy_lambda" {
+  security_group_id = aws_security_group.rdsproxy_lambda_tf.id
+  description       = "Rule to allow connections from PostgreSQL RDS with sg attached"
+  cidr_ipv4         = aws_vpc.travel_homie_main.cidr_block
+  from_port         = 5432
+  ip_protocol       = "tcp"
+  to_port           = 5432
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
+  security_group_id = aws_security_group.rdsproxy_lambda_tf.id
+  description       = "Rule to allow connections to PostgreSQL RDS with sg attached"
+  cidr_ipv4         = aws_vpc.travel_homie_main.cidr_block
+  from_port         = 5432
+  ip_protocol       = "tcp"
+  to_port           = 5432
+}
+
+resource "aws_db_proxy" "travel_homie_db_proxy" {
+  name                   = "travel_homie_db_proxy"
+  debug_logging          = false
+  engine_family          = "POSTGRESQL"
+  idle_client_timeout    = 1800
+  require_tls            = false
+  role_arn               = aws_iam_role.travel_homie_get_user_role.arn
+  vpc_security_group_ids = [aws_security_group.rdsproxy_lambda_tf.id]
+  vpc_subnet_ids         = [aws_subnet.travel_homie_1.id, aws_subnet.travel_homie_2.id]
+
+  default_auth_scheme = "IAM_AUTH"
+}
+
 /*
 
 resource "aws_db_instance" "quotes_generator" {
