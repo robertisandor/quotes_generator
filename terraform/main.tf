@@ -1055,7 +1055,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6_rdsproxy_tf" {
 }
 
 resource "aws_db_proxy" "travel_homie_db_proxy" {
-  name                   = "travel_homie_db_proxy"
+  name                   = "travel-homie-db-proxy"
   debug_logging          = false
   engine_family          = "POSTGRESQL"
   idle_client_timeout    = 1800
