@@ -999,7 +999,7 @@ resource "aws_iam_role" "travel_homie_get_user_role" {
   }
 }
 
-data "aws_iam_policy_document" "assume_role" {
+data "aws_iam_policy_document" "assume_role_rds_proxy_tf" {
   statement {
     effect = "Allow"
 
@@ -1045,7 +1045,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_postgresql_rdsproxy_lambda
   to_port           = 5432
 }
 
-resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6" {
+resource "aws_vpc_security_group_egress_rule" "allow_tls_ipv6_rdsproxy_tf" {
   security_group_id = aws_security_group.rdsproxy_lambda_tf.id
   description       = "Rule to allow connections to PostgreSQL RDS with sg attached"
   cidr_ipv4         = aws_vpc.travel_homie_main.cidr_block
